@@ -124,17 +124,21 @@ public class WrySourceParser {
         //TODO : cause game over and return player to previous chocie.
 
         for (String subName : rawSubData.keySet()) {
-            if (PageValidator.isValidPage(rawSubData.get(subName))) {
+            if (!subName.equals(STORY_SUB_NAME)) {
+                if (PageValidator.isValidPage(rawSubData.get(subName))) {
 
-                logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
+                    logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
 
-                for (String lineData : rawSubData.get(subName)) {
+                    Map<Integer, String> pageDestinationChoices = getChoiceDestinationsForSub(rawSubData.get(subName));
 
+                    for (String lineData : rawSubData.get(subName)) {
+
+                    }
+                } else if (PageValidator.isGameOverScreen(rawSubData.get(subName))) {
+                    logger.info("generatePages :: SubName : " + subName + " is a Game Over screen.");
+                } else {
+                    logger.info("generatePages :: SubName : " + subName + " is not a valid story page.");
                 }
-            } else if (PageValidator.isGameOverScreen(rawSubData.get(subName))) {
-                logger.info("generatePages :: SubName : " + subName + " is a Game Over screen.");
-            } else {
-                logger.info("generatePages :: SubName : " + subName + " is not a valid story page.");
             }
         }
 
