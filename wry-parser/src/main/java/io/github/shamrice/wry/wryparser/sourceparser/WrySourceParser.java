@@ -1,7 +1,7 @@
 package io.github.shamrice.wry.wryparser.sourceparser;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
-import io.github.shamrice.wry.wryparser.filter.exclude.ExcludedSubFilter;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.filter.trim.LineTrimmer;
 import io.github.shamrice.wry.wryparser.sourceparser.validate.PageValidator;
 import io.github.shamrice.wry.wryparser.story.Story;
@@ -23,16 +23,16 @@ public class WrySourceParser {
     private final static String STORY_SUB_NAME = "gameselect";
 
     private File wrySourceFile;
-    private ExcludeFilter excludeFilter;
-    private ExcludedSubFilter excludedSubFilter = new ExcludedSubFilter();
+
+    private List<ExcludeFilter> excludeFilters;
     private List<Story> storyData = new ArrayList<>();
     private Map<String, List<String>> rawSubData = new HashMap<>();
     private List<String> failedStoryPagesSubNames = new ArrayList<>();
 
 
-    public WrySourceParser(ExcludeFilter excludeFilter, File wrySourceFile) {
+    public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile) {
         this.wrySourceFile = wrySourceFile;
-        this.excludeFilter = excludeFilter;
+        this.excludeFilters = excludeFilters;
     }
 
     public void populateRawSubData() throws IOException {
@@ -104,7 +104,10 @@ public class WrySourceParser {
         List<StoryPage> storyPages = new LinkedList<>();
 
         for (String subName : rawSubData.keySet()) {
-            if (!excludedSubFilter.isSubExcludedFromPages(subName)) {
+
+            ExcludeFilter subNameExcludeFilter = getExcludeFilter(ExcludeFilterType.STORY_PAGE_SUB_NAMES);
+
+            if (subNameExcludeFilter != null && !subNameExcludeFilter.isInExcluded(subName)) {
 
                 List<String> rawSubLineData = rawSubData.get(subName);
 
@@ -145,6 +148,16 @@ public class WrySourceParser {
 
     }
 
+    private ExcludeFilter getExcludeFilter(ExcludeFilterType excludeFilterType) {
+        for (ExcludeFilter filter : excludeFilters) {
+            if (filter.getExcludeFilterType() == excludeFilterType) {
+                return filter;
+            }
+        }
+
+        return null;
+    }
+
     private List<PageChoice> getChoicesForSub(List<String> rawSubLineData) {
         Map<Integer, String> choiceDestinations = new HashMap<>();
         Map<Integer, String> choicesText = new HashMap<>();
@@ -154,7 +167,9 @@ public class WrySourceParser {
 
         for (String currentLine : rawSubLineData) {
 
-            if (!excludeFilter.isLineExcluded(currentLine)) {
+            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+
+            if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(currentLine)) {
                 currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
 
                 //if choices area of story text

@@ -10,7 +10,7 @@ public class ExcludeFilterBuilder {
 
     private final static Logger logger = Logger.getLogger(ExcludeFilterBuilder.class);
 
-    public static ExcludeFilter build(File excludeFilterFile) throws IOException {
+    public static ExcludeFilter build(ExcludeFilterType excludeFilterType, File excludeFilterFile) throws IOException {
 
         List<String> excludedWords = new ArrayList<>();
 
@@ -21,16 +21,18 @@ public class ExcludeFilterBuilder {
 
             while ((currentLine = bufferedReader.readLine()) != null) {
                 if (!currentLine.isEmpty()) {
-                    excludedWords.add(currentLine);
+                    excludedWords.add(currentLine.trim());
                 }
             }
+        } else {
+            logger.error("Exclude file supplied for " + excludeFilterType.name() + " does not exist. No entries added.");
         }
 
-        logger.info("Excluded Words:");
+        logger.info(excludeFilterType.name() + " Excluded Words:");
         for (String word : excludedWords) {
             logger.info(word);
         }
-        return new ExcludeFilter(excludedWords);
+        return new ExcludeFilter(excludeFilterType, excludedWords);
 
     }
 }

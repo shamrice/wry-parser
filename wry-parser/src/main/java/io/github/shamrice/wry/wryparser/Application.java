@@ -2,11 +2,14 @@ package io.github.shamrice.wry.wryparser;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterBuilder;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.sourceparser.WrySourceParser;
 import org.apache.log4j.Logger;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class Application implements Callable<Void> {
@@ -19,10 +22,15 @@ public class Application implements Callable<Void> {
             required = true)
     private File wrySourceFile;
 
-    @CommandLine.Option(names = { "-x", "--exclude-file" },
-            paramLabel = "EXCLUDE_FILE",
-            description = "File with list of words to exclude during parsing of Wry Source")
-    private File excludeFile;
+    @CommandLine.Option(names = { "-xc", "--exclude-commands" },
+            paramLabel = "EXCLUDE_COMMAND_FILE",
+            description = "File with list of BASIC command words to exclude during parsing of Wry Source")
+    private File excludeCommandFile;
+
+    @CommandLine.Option(names = { "-xs", "--exclude-subs" },
+            paramLabel = "EXCLUDE_SUB_NAME_FILE",
+            description = "File with list of sub names to exclude from story pages.")
+    private File excludeSubNamesFile;
 
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Displays help.")
     boolean isHelpRequested = false;
@@ -42,11 +50,14 @@ public class Application implements Callable<Void> {
     public Void call() {
 
         try {
-            logger.info("Creating exclude filter.");
-            ExcludeFilter excludeFilter = ExcludeFilterBuilder.build(excludeFile);
+            List<ExcludeFilter> excludeFilters = new ArrayList<>();
+
+            logger.info("Creating exclude filters.");
+            excludeFilters.add(ExcludeFilterBuilder.build(ExcludeFilterType.BASIC_COMMANDS, excludeCommandFile));
+            excludeFilters.add(ExcludeFilterBuilder.build(ExcludeFilterType.STORY_PAGE_SUB_NAMES, excludeSubNamesFile));
 
             logger.info("Creating WrySourceParser.");
-            WrySourceParser wrySourceParser = new WrySourceParser(excludeFilter, wrySourceFile);
+            WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile);
 
             logger.info("Populating Raw Subroutine Data.");
             wrySourceParser.populateRawSubData();
