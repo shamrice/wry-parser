@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ExcludeFilter {
 
-    List<String> excludedWords;
+    private List<String> excludedWords;
 
     ExcludeFilter(List<String> excludedWords) {
 

@@ -1,32 +1,34 @@
 package io.github.shamrice.wry.wryparser.sourceparser;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludedSubFilter;
 import io.github.shamrice.wry.wryparser.filter.trim.LineTrimmer;
 import io.github.shamrice.wry.wryparser.sourceparser.validate.PageValidator;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
+import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WrySourceParser {
 
     private final static Logger logger = Logger.getLogger(WrySourceParser.class);
 
-    private final static String STORY_REGEX_PATTERN = "[0-9].*";
+    private final static String CHOICE_REGEX_PATTERN = "^[0-9].*\\).*";
     private final static String STORY_SUB_NAME = "gameselect";
 
     private File wrySourceFile;
     private ExcludeFilter excludeFilter;
+    private ExcludedSubFilter excludedSubFilter = new ExcludedSubFilter();
     private List<Story> storyData = new ArrayList<>();
     private Map<String, List<String>> rawSubData = new HashMap<>();
+    private List<String> failedStoryPagesSubNames = new ArrayList<>();
+
 
     public WrySourceParser(ExcludeFilter excludeFilter, File wrySourceFile) {
         this.wrySourceFile = wrySourceFile;
@@ -78,41 +80,16 @@ public class WrySourceParser {
     public void generateStories() {
 
         List<String> rawStorySubData = rawSubData.get(STORY_SUB_NAME);
-        List<String> validContents = new ArrayList<>();
+        List<PageChoice> storyChoices = getChoicesForSub(rawStorySubData);
 
-        //get story names and ids
-        for (String currentLine : rawStorySubData) {
+        for (PageChoice storyChoice : storyChoices) {
 
-            if (!excludeFilter.isLineExcluded(currentLine)) {
-                currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
-                logger.debug("STORY SUB :: " + currentLine);
-
-                if (currentLine.matches(STORY_REGEX_PATTERN)) {
-                    validContents.add(currentLine);
-                }
-            }
-        }
-
-        //get story choice destination subs
-        Map<Integer, String> choiceDestination = getChoiceDestinationsForSub(rawStorySubData);
-
-        //build stories object with found data
-        for (String validContent : validContents) {
-            logger.info("generateStories :: Valid content found: " + validContent);
-
-            String[] idAndName = validContent.split("\\) ");
-
-            logger.debug("generateStories :: idAndName[0] = " + idAndName[0]);
-            logger.debug("generateStories :: idAndName[1] = " + idAndName[1]);
-
-            int id = Integer.parseInt(idAndName[0]);
-            String name = idAndName[1];
-
-            Story story = new Story(id, name);
-            story.setFirstPageSubName(choiceDestination.get(id));
+            Story story = new Story(storyChoice.getChoiceId(), storyChoice.getChoiceText());
+            story.setFirstPageSubName(storyChoice.getDestinationSubName());
             this.storyData.add(story);
 
-            logger.info("generateStories :: Added story id " + id + " : " + name + " to storyData. First sub name= "
+            logger.info("generateStories :: Added story id " + story.getStoryId() + " : "
+                    + story.getStoryName() + " to storyData. First sub name= "
                     + story.getFirstPageSubName());
         }
 
@@ -121,31 +98,56 @@ public class WrySourceParser {
     public void generatePages() {
 
         //TODO : need to also differentiate pages like "buysold" which are intermediate pages for info that do not
-        //TODO : cause game over and return player to previous chocie.
+        //TODO : cause game over and return player to previous choice.
+
+        int pageId = 0;
+        List<StoryPage> storyPages = new LinkedList<>();
 
         for (String subName : rawSubData.keySet()) {
-            if (!subName.equals(STORY_SUB_NAME)) {
-                if (PageValidator.isValidPage(rawSubData.get(subName))) {
+            if (!excludedSubFilter.isSubExcludedFromPages(subName)) {
+
+                List<String> rawSubLineData = rawSubData.get(subName);
+
+                if (rawSubLineData != null && PageValidator.isValidPage(rawSubLineData)) {
 
                     logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
 
-                    Map<Integer, String> pageDestinationChoices = getChoiceDestinationsForSub(rawSubData.get(subName));
+                    String pageStoryText = getPageStoryText(rawSubLineData);
+                    List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
 
-                    for (String lineData : rawSubData.get(subName)) {
-
+                    for (PageChoice choice : pageChoices) {
+                        choice.setSourcePageId(pageId);
                     }
-                } else if (PageValidator.isGameOverScreen(rawSubData.get(subName))) {
+
+                    StoryPage storyPage = new StoryPage(pageId, subName, pageStoryText);
+                    storyPage.setPageChoices(pageChoices);
+
+                    storyPages.add(storyPage);
+
+                    pageId++;
+
+                } else if (PageValidator.isGameOverScreen(rawSubLineData)) {
                     logger.info("generatePages :: SubName : " + subName + " is a Game Over screen.");
                 } else {
-                    logger.info("generatePages :: SubName : " + subName + " is not a valid story page.");
+                    failedStoryPagesSubNames.add(subName);
+                    logger.info("generatePages :: SubName : " + subName + " is not a valid story page. Skipping");
                 }
             }
         }
 
+        for (StoryPage storyPage : storyPages) {
+            storyPage.logStoryPageDetails();
+        }
+
+        failedStoryPagesSubNames.forEach( name -> logger.error("Failed to parse story page with sub name : " + name));
+        logger.error("Total failed parsed subs: " + failedStoryPagesSubNames.size());
+
+
     }
 
-    private Map<Integer, String> getChoiceDestinationsForSub(List<String> rawSubLineData) {
+    private List<PageChoice> getChoicesForSub(List<String> rawSubLineData) {
         Map<Integer, String> choiceDestinations = new HashMap<>();
+        Map<Integer, String> choicesText = new HashMap<>();
 
         boolean isNextLineChoiceDestination = false;
         int choiceId = -1;
@@ -154,6 +156,19 @@ public class WrySourceParser {
 
             if (!excludeFilter.isLineExcluded(currentLine)) {
                 currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
+
+                //if choices area of story text
+                if (currentLine.matches(CHOICE_REGEX_PATTERN)) {
+                    String[] idAndText = currentLine.split("\\) ");
+
+                    logger.debug("getChoicesForSub :: idAndText[0] = " + idAndText[0]);
+                    logger.debug("getChoicesForSub :: idAndText[1] = " + idAndText[1]);
+
+                    int id = Integer.parseInt(idAndText[0]);
+                    String text = idAndText[1];
+
+                    choicesText.put(id, text);
+                }
 
                 //get destination sub for each switch choice
                 if (currentLine.contains("CASE") && !currentLine.contains("SELECT")
@@ -165,7 +180,7 @@ public class WrySourceParser {
                 if (isNextLineChoiceDestination && !currentLine.contains("CASE")) {
 
                     logger.debug("getChoiceDestinationsForSub :: Potential destination SUB = " + currentLine
-                            + " choice =" + choiceId);
+                            + " choice = " + choiceId);
 
                     choiceDestinations.put(choiceId, currentLine);
                     isNextLineChoiceDestination = false;
@@ -174,7 +189,19 @@ public class WrySourceParser {
             }
         }
 
-        return choiceDestinations;
+        List<PageChoice> pageChoices = new LinkedList<>();
+
+        for (int id : choiceDestinations.keySet()) {
+            pageChoices.add(new PageChoice(id, choicesText.get(id), choiceDestinations.get(id)));
+        }
+
+        return pageChoices;
+    }
+
+    private String getPageStoryText(List<String> rawSubLineData) {
+        String pageStoryText = "";
+
+        return pageStoryText;
     }
 
 

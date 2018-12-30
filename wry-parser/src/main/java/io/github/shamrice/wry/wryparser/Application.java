@@ -57,6 +57,7 @@ public class Application implements Callable<Void> {
             logger.info("Generating Story Pages.");
             wrySourceParser.generatePages();
 
+
         } catch (Exception ex) {
            logger.error(ex);
         }

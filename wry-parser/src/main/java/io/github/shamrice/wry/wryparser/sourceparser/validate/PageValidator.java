@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PageValidator {
 
-    private final static String GAME_OVER_SUBNAME = "Gameover";
+    private final static String GAME_OVER_SUB_NAME = "Gameover";
 
     public static boolean isValidPage(List<String> subLineData) {
 
@@ -38,7 +38,7 @@ public class PageValidator {
 
     public static boolean isGameOverScreen(List<String> subLineData) {
         for (String line : subLineData) {
-            if (line.contains(GAME_OVER_SUBNAME)) {
+            if (line.contains(GAME_OVER_SUB_NAME)) {
                 return true;
             }
         }

@@ -10,9 +10,8 @@ public class PageChoice {
     private boolean isParsed = false;
     private String statusMessage;
 
-    public PageChoice(int choiceId, int sourcePageId, String choiceText, String destinationSubName) {
+    public PageChoice(int choiceId, String choiceText, String destinationSubName) {
         this.choiceId = choiceId;
-        this.sourcePageId = sourcePageId;
         this.choiceText = choiceText;
         this.destinationSubName = destinationSubName;
     }
@@ -20,6 +19,10 @@ public class PageChoice {
 
     public int getChoiceId() {
         return choiceId;
+    }
+
+    public void setSourcePageId(int sourcePageId) {
+        this.sourcePageId = sourcePageId;
     }
 
     public int getSourcePageId() {

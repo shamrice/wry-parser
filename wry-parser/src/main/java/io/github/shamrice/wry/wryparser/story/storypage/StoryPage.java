@@ -1,13 +1,16 @@
 package io.github.shamrice.wry.wryparser.story.storypage;
 
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
+import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class StoryPage {
 
-    private int sourceStoryId;
+    private final static Logger logger = Logger.getLogger(StoryPage.class);
+
+    private int sourceStoryId = -1;
     private int storyPageId;
     private String originalSubName;
     private String pageText;
@@ -16,11 +19,14 @@ public class StoryPage {
     private String statusMessage;
     private List<PageChoice> pageChoices = new LinkedList<>();
 
-    public StoryPage(int sourceStoryId, int storyPageId, String originalSubName, String pageText) {
-        this.sourceStoryId = sourceStoryId;
+    public StoryPage(int storyPageId, String originalSubName, String pageText) {
         this.storyPageId = storyPageId;
         this.originalSubName = originalSubName;
         this.pageText = pageText;
+    }
+
+    public void setSourceStoryId(int sourceStoryId) {
+        this.sourceStoryId = sourceStoryId;
     }
 
     public int getSourceStoryId() {
@@ -73,5 +79,25 @@ public class StoryPage {
 
     public void setValidPage(boolean validPage) {
         isValidPage = validPage;
+    }
+
+    public void logStoryPageDetails() {
+
+        logger.info("logStoryPageDetails :: sourceStoryId=" + sourceStoryId + " : storyPageId=" + storyPageId
+                + " : originalSubName=" + originalSubName + " : pageText=" + pageText + " : isParsed="
+                + isParsed + " : isValidPage=" + isValidPage + " : statusMessage=" + statusMessage);
+
+        for (PageChoice choice : pageChoices) {
+            StringBuilder sbLog = new StringBuilder("logStoryPageDetails :: PageChoices : ");
+            sbLog.append("choiceId=" + choice.getChoiceId());
+            sbLog.append(" : sourcePageId= " + choice.getSourcePageId());
+            sbLog.append(" : destinationPageId= " + choice.getDestinationPageId());
+            sbLog.append(" : destinationSubName=" + choice.getDestinationSubName());
+            sbLog.append(" : choiceText=" + choice.getChoiceText());
+            sbLog.append(" : isParsed=" + choice.isParsed());
+            sbLog.append(" : statusMessage=" + choice.getStatusMessage());
+            logger.info(sbLog.toString());
+        }
+
     }
 }
