@@ -59,14 +59,7 @@ public class Application implements Callable<Void> {
             logger.info("Creating WrySourceParser.");
             WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile);
 
-            logger.info("Populating Raw Subroutine Data.");
-            wrySourceParser.populateRawSubData();
-
-            logger.info("Generating Story Data.");
-            wrySourceParser.generateStories();
-
-            logger.info("Generating Story Pages.");
-            wrySourceParser.generatePages();
+            wrySourceParser.run();
 
 
         } catch (Exception ex) {

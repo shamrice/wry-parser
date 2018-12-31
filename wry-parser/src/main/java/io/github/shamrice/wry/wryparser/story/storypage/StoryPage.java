@@ -16,8 +16,12 @@ public class StoryPage {
     private String pageText;
     private boolean isParsed = false;
     private boolean isValidPage = false;
+    private boolean isGameOverPage = false;
+    private boolean isWinPage = false;
+    private boolean isPreGamePage = false;
     private String statusMessage;
     private List<PageChoice> pageChoices = new LinkedList<>();
+
 
     public StoryPage(int storyPageId, String originalSubName, String pageText) {
         this.storyPageId = storyPageId;
@@ -85,7 +89,9 @@ public class StoryPage {
 
         logger.info("logStoryPageDetails :: sourceStoryId=" + sourceStoryId + " : storyPageId=" + storyPageId
                 + " : originalSubName=" + originalSubName + " : pageText=" + pageText + " : isParsed="
-                + isParsed + " : isValidPage=" + isValidPage + " : statusMessage=" + statusMessage);
+                + isParsed + " : isValidPage=" + isValidPage + " : isGameOverPage=" + isGameOverPage
+                + " : isWinPage=" + isWinPage + " : isPreGamePage=" + isPreGamePage
+                + " : statusMessage=" + statusMessage);
 
         for (PageChoice choice : pageChoices) {
             StringBuilder sbLog = new StringBuilder("logStoryPageDetails :: PageChoices : ");
@@ -99,5 +105,29 @@ public class StoryPage {
             logger.info(sbLog.toString());
         }
 
+    }
+
+    public boolean isGameOverPage() {
+        return isGameOverPage;
+    }
+
+    public void setGameOverPage(boolean isGameOverPage) {
+        this.isGameOverPage = isGameOverPage;
+    }
+
+    public boolean isWinPage() {
+        return isWinPage;
+    }
+
+    public void setWinPage(boolean isWinPage) {
+        this.isWinPage = isWinPage;
+    }
+
+    public boolean isPreGamePage() {
+        return isPreGamePage;
+    }
+
+    public void setPreGamePage(boolean preGamePage) {
+        isPreGamePage = preGamePage;
     }
 }

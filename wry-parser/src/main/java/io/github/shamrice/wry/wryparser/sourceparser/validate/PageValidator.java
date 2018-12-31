@@ -1,8 +1,12 @@
 package io.github.shamrice.wry.wryparser.sourceparser.validate;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
 
 public class PageValidator {
+
+    private final static Logger logger = Logger.getLogger(PageValidator.class);
 
     private final static String GAME_OVER_SUB_NAME = "Gameover";
 
@@ -39,10 +43,32 @@ public class PageValidator {
     public static boolean isGameOverScreen(List<String> subLineData) {
         for (String line : subLineData) {
             if (line.contains(GAME_OVER_SUB_NAME)) {
+                logger.info("isGameOverScreen :: is game over screen");
                 return true;
             }
         }
 
+        return false;
+    }
+
+    public static boolean isWinningScreen(List<String> subLineData) {
+        for (String line : subLineData) {
+            if (line.contains("YOU WON EPISODE") || line.toLowerCase().contains("you have beaten")) {
+                logger.info("isWinningScreen :: is winning screen");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isPreGameScreen(List<String> subLineData) {
+        for (String line : subLineData) {
+            if (line.contains("SUB pregame") || line.contains("SUB ldemo")) {
+                logger.info("isPreGameScreen :: is pre-game screen");
+                return true;
+            }
+        }
         return false;
     }
 }
