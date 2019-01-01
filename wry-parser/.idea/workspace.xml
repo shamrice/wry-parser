@@ -8,10 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07cea60d-5b9f-4f46-8e14-e59ac922c814" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,8 +43,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="109" column="8" lean-forward="true" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
+            <state relative-caret-position="-875">
+              <caret line="136" column="53" selection-start-line="136" selection-start-column="53" selection-end-line="136" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -62,8 +61,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="49" column="81" selection-start-line="49" selection-start-column="81" selection-end-line="49" selection-end-column="81" />
+            <state relative-caret-position="216">
+              <caret line="82" column="40" lean-forward="true" selection-start-line="82" selection-start-column="40" selection-end-line="82" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -83,8 +82,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="747">
-              <caret line="88" selection-start-line="88" selection-end-line="88" />
+            <state relative-caret-position="177">
+              <caret line="23" column="59" selection-start-line="23" selection-start-column="59" selection-end-line="23" selection-end-column="59" />
               <folding>
                 <element signature="e#3219#3220#0" expanded="true" />
                 <element signature="e#3258#3259#0" expanded="true" />
@@ -204,9 +203,9 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/exclude/ExcludeFilterType.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/exclude/ExcludeFilterBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" />
         <option value="$PROJECT_DIR$/src/main/resources/exclude_subs.list" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" />
       </list>
@@ -361,7 +360,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546302250124" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546303676790" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/out/artifacts/wryparser_jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -413,7 +412,7 @@
       <window_info id="UI Designer" />
       <window_info id="Capture Tool" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23756497" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23756497" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Terminal" />
@@ -421,7 +420,7 @@
       <window_info anchor="bottom" id="Messages" weight="0.32978722" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32978722" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19414894" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39893618" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -516,38 +515,10 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/exclude_commands.list">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/PageChoice/PageChoice.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="237">
           <caret line="60" selection-start-line="60" selection-end-line="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="747">
-          <caret line="88" selection-start-line="88" selection-end-line="88" />
-          <folding>
-            <element signature="e#3219#3220#0" expanded="true" />
-            <element signature="e#3258#3259#0" expanded="true" />
-            <element signature="e#3319#3320#0" expanded="true" />
-            <element signature="e#3368#3369#0" expanded="true" />
-            <element signature="e#3404#3405#0" expanded="true" />
-            <element signature="e#3438#3439#0" expanded="true" />
-            <element signature="e#3489#3490#0" expanded="true" />
-            <element signature="e#3528#3529#0" expanded="true" />
-            <element signature="e#3681#3682#0" expanded="true" />
-            <element signature="e#3717#3718#0" expanded="true" />
-            <element signature="e#3772#3773#0" expanded="true" />
-            <element signature="e#3815#3816#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -582,17 +553,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/PageChoice/PageChoice.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="23" column="59" selection-start-line="23" selection-start-column="59" selection-end-line="23" selection-end-column="59" />
+          <folding>
+            <element signature="e#3219#3220#0" expanded="true" />
+            <element signature="e#3258#3259#0" expanded="true" />
+            <element signature="e#3319#3320#0" expanded="true" />
+            <element signature="e#3368#3369#0" expanded="true" />
+            <element signature="e#3404#3405#0" expanded="true" />
+            <element signature="e#3438#3439#0" expanded="true" />
+            <element signature="e#3489#3490#0" expanded="true" />
+            <element signature="e#3528#3529#0" expanded="true" />
+            <element signature="e#3681#3682#0" expanded="true" />
+            <element signature="e#3717#3718#0" expanded="true" />
+            <element signature="e#3772#3773#0" expanded="true" />
+            <element signature="e#3815#3816#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="109" column="8" lean-forward="true" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
+        <state relative-caret-position="-875">
+          <caret line="136" column="53" selection-start-line="136" selection-start-column="53" selection-end-line="136" selection-end-column="53" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="49" column="81" selection-start-line="49" selection-start-column="81" selection-end-line="49" selection-end-column="81" />
+        <state relative-caret-position="216">
+          <caret line="82" column="40" lean-forward="true" selection-start-line="82" selection-start-column="40" selection-end-line="82" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

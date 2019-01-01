@@ -3,6 +3,7 @@ package io.github.shamrice.wry.wryparser.story.storypage;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class StoryPage {
     private boolean isWinPage = false;
     private boolean isPreGamePage = false;
     private String statusMessage;
-    private List<PageChoice> pageChoices = new LinkedList<>();
+    private List<PageChoice> pageChoices = new ArrayList<>();
 
 
     public StoryPage(int storyPageId, String originalSubName, String pageText) {

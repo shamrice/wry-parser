@@ -90,13 +90,6 @@ public class WrySourceParser {
                 }
             }
 
-            /*
-            for (String name : rawSubData.keySet()) {
-                for (String data : rawSubData.get(name)) {
-                    logger.debug(name + " :: " + data);
-                }
-            }
-            */
         }
     }
 
@@ -141,7 +134,7 @@ public class WrySourceParser {
         //TODO : cause game over and return player to previous choice.
 
         int pageId = 0;
-        List<StoryPage> storyPages = new LinkedList<>();
+        List<StoryPage> storyPages = new ArrayList<>();
 
         for (String subName : rawSubData.keySet()) {
 

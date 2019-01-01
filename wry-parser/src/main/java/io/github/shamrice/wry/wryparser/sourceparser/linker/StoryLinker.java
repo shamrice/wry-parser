@@ -81,17 +81,29 @@ public class StoryLinker {
     private void traverseStory(int storyId, StoryPage page, List<StoryPage> allPages) {
 
         // TODO : causing stack over flow. needs to be re-thunk.
+        // TODO : adding check for choiceid = -1 caused spy adventure to get stuck in infinite loop
         for (PageChoice choice : page.getPageChoices()) {
-            int nextPageId = choice.getSourcePageId();
+            logger.info("Page " + page.getOriginalSubName() + " choice text= " + choice.getChoiceText()
+                    + " choice dest= " + choice.getDestinationSubName());
 
-            if (!page.isParsed()) {
+            if (!page.isParsed() && choice.getDestinationPageId() != -1) {
+
+                int nextPageId = choice.getDestinationPageId();
                 page.setSourceStoryId(storyId);
+
                 traverseStory(storyId, allPages.get(nextPageId), allPages);
+            }
+
+            if (choice.getDestinationPageId() == -1) {
+                page.setParsed(true);
+                page.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
+                        + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
             }
         }
 
         page.setParsed(true);
         page.setStatusMessage("Finishing linking page to story");
+
         logger.info("Finished linking page " + page.getStoryPageId() + "-" + page.getOriginalSubName()
                 + " to story Id " + storyId);
     }
