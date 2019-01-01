@@ -8,11 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07cea60d-5b9f-4f46-8e14-e59ac922c814" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/exclude_subs.list" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/exclude_subs.list" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +28,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/resources/WRY.BAS">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="561">
-                    <caret line="2254" column="5" selection-start-line="2254" selection-end-line="2254" selection-end-column="5" />
+                  <state relative-caret-position="-69">
+                    <caret line="2167" column="14" selection-start-line="2167" selection-end-line="2167" selection-end-column="14" />
                   </state>
                 </provider>
               </entry>
@@ -45,26 +44,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-599">
-              <caret line="216" column="29" selection-start-line="216" selection-start-column="29" selection-end-line="216" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/exclude_subs.list">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+            <state relative-caret-position="137">
+              <caret line="109" column="8" lean-forward="true" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/exclude_subs.list">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="275">
+              <caret line="49" column="81" selection-start-line="49" selection-start-column="81" selection-end-line="49" selection-end-column="81" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -116,8 +115,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="66" column="72" selection-start-line="66" selection-start-column="72" selection-end-line="66" selection-end-column="72" />
+            <state relative-caret-position="452">
+              <caret line="75" column="72" selection-start-line="75" selection-start-column="72" selection-end-line="75" selection-end-column="72" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -160,14 +159,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>SUB deadman</find>
-      <find>SUB Gameover</find>
-      <find>SUB pretitle</find>
       <find>SUB menu02</find>
       <find>SUB gamesecrets5</find>
       <find>SUB menu01</find>
       <find>SUB aboutus3</find>
-      <find>SUB game1</find>
       <find>SUB readthis4</find>
       <find>SUB story2</find>
       <find>SUB title</find>
@@ -187,9 +182,13 @@
       <find>isPregame</find>
       <find>pregame screen destin</find>
       <find>secretStory</find>
-      <find>pregame screen dest</find>
-      <find>gameselect2</find>
       <find>ldemo</find>
+      <find>pregame screen dest</find>
+      <find>woods1</find>
+      <find>SUB game1</find>
+      <find>gameselect2</find>
+      <find>SUB gameselect2</find>
+      <find>sub game1</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -205,11 +204,11 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/exclude/ExcludeFilterType.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/exclude/ExcludeFilterBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/StoryPage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" />
         <option value="$PROJECT_DIR$/src/main/resources/exclude_subs.list" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" />
       </list>
     </option>
   </component>
@@ -362,7 +361,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546249730301" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546302250124" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/out/artifacts/wryparser_jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -422,7 +421,7 @@
       <window_info anchor="bottom" id="Messages" weight="0.32978722" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32978722" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.45345744" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39893618" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -524,13 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/trim/LineTrimmer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="237">
@@ -559,44 +551,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/exclude_subs.list">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/filter/trim/LineTrimmer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/WRY.BAS">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="2254" column="5" selection-start-line="2254" selection-end-line="2254" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-599">
-          <caret line="216" column="29" selection-start-line="216" selection-start-column="29" selection-end-line="216" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="-69">
+          <caret line="2167" column="14" selection-start-line="2167" selection-end-line="2167" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="66" column="72" selection-start-line="66" selection-start-column="72" selection-end-line="66" selection-end-column="72" />
+        <state relative-caret-position="452">
+          <caret line="75" column="72" selection-start-line="75" selection-start-column="72" selection-end-line="75" selection-end-column="72" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/exclude_subs.list">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+        <state relative-caret-position="137">
+          <caret line="109" column="8" lean-forward="true" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="49" column="81" selection-start-line="49" selection-start-column="81" selection-end-line="49" selection-end-column="81" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

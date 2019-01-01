@@ -21,7 +21,8 @@ public class WrySourceParser {
     private final static Logger logger = Logger.getLogger(WrySourceParser.class);
 
     private final static String CHOICE_REGEX_PATTERN = "^[0-9].*\\).*";
-    private final static String STORY_SUB_NAME = "gameselect2";
+    private final static String STORY_SUB_NAME2 = "gameselect2";
+    private final static String STORY_SUB_NAME1 = "gameselect";
 
     private File wrySourceFile;
 
@@ -46,6 +47,9 @@ public class WrySourceParser {
         logger.info("Generating Story Pages.");
         List<StoryPage> unlinkedStoryPages = generatePages();
 
+        logger.info("Linking destination pageIds to Story Page Choices");
+        linkDestinationPagesToChices(unlinkedStoryPages);
+
         logger.info("Linking pages into stories.");
         linkStories(unlinkedStoryPages);
 
@@ -67,7 +71,7 @@ public class WrySourceParser {
                 if (currentLine.contains("SUB") && !currentLine.equals("END SUB") && !currentLine.contains("GOSUB")
                     && !currentLine.contains("()")) {
 
-                    logger.debug("Found sub line: " + currentLine);
+                    //logger.debug("Found sub line: " + currentLine);
                     isSub = true;
                     subName = currentLine.split("\\ ")[1];
                     rawLineData = new ArrayList<>();
@@ -75,42 +79,58 @@ public class WrySourceParser {
                 }
 
                 if (isSub) {
-                    logger.debug("Subname = " + subName + " Adding current line " + currentLine);
+                    //logger.debug("Subname = " + subName + " Adding current line " + currentLine);
                     rawLineData.add(currentLine);
                 }
 
                 if (currentLine.equals("END SUB")) {
-                    logger.debug("END SUB found for sub " + subName);
+                    logger.debug("Finished getting raw sub data - END SUB found for sub " + subName);
                     isSub = false;
                     rawSubData.put(subName, rawLineData);
                 }
             }
 
+            /*
             for (String name : rawSubData.keySet()) {
                 for (String data : rawSubData.get(name)) {
                     logger.debug(name + " :: " + data);
                 }
             }
+            */
         }
     }
 
     private void generateStories() {
 
-        List<String> rawStorySubData = rawSubData.get(STORY_SUB_NAME);
-        List<PageChoice> storyChoices = getChoicesForSub(rawStorySubData);
+        /*
+            There are two story choice screens. The unlocked one that has the destination for episode 4
+            lacks the pregame screens and the locked one lacks the link to the pregame of episode 4. To get
+            around this, we have to comb through both of these subs to find the pregame screen destinations
+        */
 
-        for (PageChoice storyChoice : storyChoices) {
+        List<String> rawStorySubDataLocked = rawSubData.get(STORY_SUB_NAME1);
+        List<String> rawStorySubDataUnlocked = rawSubData.get(STORY_SUB_NAME2);
 
-            String storyChoiceText = storyChoice.getChoiceText();
-            storyChoiceText = storyChoiceText.replace("-UNLOCKED-", "");
+        List<PageChoice> storyChoicesLocked = getChoicesForSub(rawStorySubDataLocked);
+        List<PageChoice> storyChoicesUnlocked = getChoicesForSub(rawStorySubDataUnlocked);
 
-            Story story = new Story(storyChoice.getChoiceId(), storyChoiceText);
-            story.setFirstPageSubName(storyChoice.getDestinationSubName());
-            this.storyData.add(story);
+        storyChoicesLocked.addAll(storyChoicesUnlocked);
 
-            logger.info("generateStories :: Added story id " + story.getStoryId() + " : "
-                    + story.getStoryName() + " to storyData. First sub name= "
-                    + story.getFirstPageSubName());
+        for (PageChoice storyChoice : storyChoicesLocked) {
+
+            if (PageValidator.isPreGameScreen(storyChoice.getDestinationSubName())) {
+
+                String storyChoiceText = storyChoice.getChoiceText();
+                storyChoiceText = storyChoiceText.replace("-UNLOCKED-", "");
+
+                Story story = new Story(storyChoice.getChoiceId(), storyChoiceText);
+                story.setFirstPageSubName(storyChoice.getDestinationSubName());
+                this.storyData.add(story);
+
+                logger.info("generateStories :: Added story id " + story.getStoryId() + " : "
+                        + story.getStoryName() + " to storyData. First sub name= "
+                        + story.getFirstPageSubName());
+            }
         }
 
     }
@@ -194,6 +214,11 @@ public class WrySourceParser {
 
         return storyPages;
 
+    }
+
+    private void linkDestinationPagesToChices(List<StoryPage> unlinkedStories) {
+        StoryLinker linker = new StoryLinker();
+        linker.linkDestinationPageIdsToChoices(unlinkedStories);
     }
 
     private void linkStories(List<StoryPage> unlinkedStoryPages) {

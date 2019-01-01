@@ -71,4 +71,8 @@ public class PageValidator {
         }
         return false;
     }
+
+    public static boolean isPreGameScreen(String subName) {
+        return (subName.contains("pregame") || subName.equals("ldemo"));
+    }
 }
