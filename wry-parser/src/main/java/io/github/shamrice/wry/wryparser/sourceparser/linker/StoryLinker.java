@@ -5,11 +5,13 @@ import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StoryLinker {
 
     private final static Logger logger = Logger.getLogger(StoryLinker.class);
+
 
     public void linkDestinationPageIdsToChoices(List<StoryPage> storyPages) {
 
@@ -82,22 +84,36 @@ public class StoryLinker {
 
         // TODO : causing stack over flow. needs to be re-thunk.
         // TODO : adding check for choiceid = -1 caused spy adventure to get stuck in infinite loop
+        // TODO : infinite loop is caused by story's option to choose between 2am and 4pm over and over again.
+        // TODO : traversal limits on choices seems to help. needs more fine tuning..........
         for (PageChoice choice : page.getPageChoices()) {
             logger.info("Page " + page.getOriginalSubName() + " choice text= " + choice.getChoiceText()
                     + " choice dest= " + choice.getDestinationSubName());
 
-            if (!page.isParsed() && choice.getDestinationPageId() != -1) {
+            if (choice.getTraverseCount() < 10) {
 
-                int nextPageId = choice.getDestinationPageId();
-                page.setSourceStoryId(storyId);
+                if (!page.isParsed() && choice.getDestinationPageId() != -1) {
 
-                traverseStory(storyId, allPages.get(nextPageId), allPages);
-            }
+                    int nextPageId = choice.getDestinationPageId();
 
-            if (choice.getDestinationPageId() == -1) {
-                page.setParsed(true);
-                page.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
-                        + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
+                    StoryPage destPage = allPages.get(nextPageId);
+
+                    if (!destPage.isParsed()) {
+
+                        choice.incrementTraverseCount();
+
+                        page.setSourceStoryId(storyId);
+                        traverseStory(storyId, allPages.get(nextPageId), allPages);
+                    }
+                }
+
+                if (choice.getDestinationPageId() == -1) {
+                    page.setParsed(true);
+                    page.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
+                            + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
+                }
+            } else {
+                logger.error("Exceeded maximum number of traversals through choice " + choice.getChoiceId() + "-" + choice.getChoiceText());
             }
         }
 

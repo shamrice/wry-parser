@@ -9,6 +9,7 @@ public class PageChoice {
     private String choiceText;
     private boolean isParsed = false;
     private String statusMessage;
+    private int traverseCount = 0;
 
     public PageChoice(int choiceId, String choiceText, String destinationSubName) {
         this.choiceId = choiceId;
@@ -59,5 +60,13 @@ public class PageChoice {
 
     public void setDestinationPageId(int destinationPageId) {
         this.destinationPageId = destinationPageId;
+    }
+
+    public int getTraverseCount() {
+        return traverseCount;
+    }
+
+    public void incrementTraverseCount() {
+        traverseCount++;
     }
 }
