@@ -9,7 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="07cea60d-5b9f-4f46-8e14-e59ac922c814" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/PageChoice/PageChoice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/PageChoice/PageChoice.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -61,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="303">
-              <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" />
+              <caret line="105" column="45" selection-start-line="105" selection-start-column="45" selection-end-line="105" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -365,7 +364,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546336039700" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546338965971" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/out/artifacts/wryparser_jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -602,7 +601,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="303">
-          <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" />
+          <caret line="105" column="45" selection-start-line="105" selection-start-column="45" selection-end-line="105" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

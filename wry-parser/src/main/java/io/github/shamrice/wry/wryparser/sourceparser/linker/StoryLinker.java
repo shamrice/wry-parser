@@ -30,7 +30,7 @@ public class StoryLinker {
                                 + " for choice " + choice.getChoiceText());
 
                         choice.setDestinationPageId(page2.getStoryPageId());
-                        choice.setParsed(true);
+                        //choice.setParsed(true);
                         choice.setStatusMessage("Finished linking and parsing choice");
                         choicesLinked++;
                     }
@@ -86,11 +86,13 @@ public class StoryLinker {
         // TODO : adding check for choiceid = -1 caused spy adventure to get stuck in infinite loop
         // TODO : infinite loop is caused by story's option to choose between 2am and 4pm over and over again.
         // TODO : traversal limits on choices seems to help. needs more fine tuning..........
+
+
         for (PageChoice choice : page.getPageChoices()) {
             logger.info("Page " + page.getOriginalSubName() + " choice text= " + choice.getChoiceText()
                     + " choice dest= " + choice.getDestinationSubName());
 
-            if (choice.getTraverseCount() < 10) {
+            if (choice.getTraverseCount() < 10 && !choice.isParsed()) {
 
                 if (!page.isParsed() && choice.getDestinationPageId() != -1) {
 
@@ -101,6 +103,7 @@ public class StoryLinker {
                     if (!destPage.isParsed()) {
 
                         choice.incrementTraverseCount();
+                        choice.setParsed(true);
 
                         page.setSourceStoryId(storyId);
                         traverseStory(storyId, allPages.get(nextPageId), allPages);

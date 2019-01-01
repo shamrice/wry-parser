@@ -166,7 +166,7 @@ public class WrySourceParser {
 
                         for (PageChoice choice : pageChoices) {
                             choice.setSourcePageId(pageId);
-                            choice.setParsed(true);
+                            //choice.setParsed(true);
                             choice.setStatusMessage("Choice finished parsing");
                         }
 
@@ -177,7 +177,7 @@ public class WrySourceParser {
 
                         PageChoice pregameChoice = new PageChoice(1, "", destinationSub);
                         pregameChoice.setSourcePageId(pageId);
-                        pregameChoice.setParsed(true);
+                        //pregameChoice.setParsed(true);
                         pregameChoice.setStatusMessage("Pregame choice finished parsing");
 
                         storyPage.addPageChoice(pregameChoice);
