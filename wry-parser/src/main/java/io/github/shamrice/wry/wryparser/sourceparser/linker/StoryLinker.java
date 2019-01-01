@@ -76,6 +76,15 @@ public class StoryLinker {
             }
         }
 
+        for (StoryPage page : storyPages) {
+            for (PageChoice choice : page.getPageChoices()) {
+                if (!choice.isParsed()) {
+                    logger.error("Failed to parse choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
+                            + " for page " + page.getOriginalSubName());
+                }
+            }
+        }
+
 
         return story;
     }
