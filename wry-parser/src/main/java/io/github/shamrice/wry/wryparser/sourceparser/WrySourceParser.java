@@ -37,7 +37,7 @@ public class WrySourceParser {
         this.excludeFilters = excludeFilters;
     }
 
-    public void run() throws IOException {
+    public List<Story> run() throws IOException {
         logger.info("Populating Raw Subroutine Data.");
         populateRawSubData();
 
@@ -53,7 +53,7 @@ public class WrySourceParser {
         logger.info("Linking pages into stories.");
         linkStories(unlinkedStoryPages);
 
-
+        return storyData;
     }
 
     private void populateRawSubData() throws IOException {
@@ -131,7 +131,7 @@ public class WrySourceParser {
     private List<StoryPage> generatePages() {
 
         //TODO : need to also differentiate pages like "buysold" which are intermediate pages for info that do not
-        //TODO : cause game over and return player to previous choice.
+        //TODO : cause gameover and return player to previous choice.
 
         int pageId = 0;
         List<StoryPage> storyPages = new ArrayList<>();
@@ -221,6 +221,7 @@ public class WrySourceParser {
         for (Story story : storyData) {
             linker.link(story, unlinkedStoryPages);
         }
+
     }
 
     private ExcludeFilter getExcludeFilter(ExcludeFilterType excludeFilterType) {

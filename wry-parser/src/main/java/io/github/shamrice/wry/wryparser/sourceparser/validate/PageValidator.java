@@ -43,7 +43,7 @@ public class PageValidator {
     public static boolean isGameOverScreen(List<String> subLineData) {
         for (String line : subLineData) {
             if (line.contains(GAME_OVER_SUB_NAME)) {
-                logger.info("isGameOverScreen :: is game over screen");
+                logger.info("isGameOverScreen :: is gameover screen");
                 return true;
             }
         }
@@ -65,7 +65,7 @@ public class PageValidator {
     public static boolean isPreGameScreen(List<String> subLineData) {
         for (String line : subLineData) {
             if (line.contains("SUB pregame") || line.contains("SUB ldemo")) {
-                logger.info("isPreGameScreen :: is pre-game screen");
+                logger.info("isPreGameScreen :: is pregame screen");
                 return true;
             }
         }

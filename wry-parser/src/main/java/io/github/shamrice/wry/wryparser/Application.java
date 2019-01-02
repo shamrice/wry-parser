@@ -3,7 +3,9 @@ package io.github.shamrice.wry.wryparser;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterBuilder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
+import io.github.shamrice.wry.wryparser.game.GameRunner;
 import io.github.shamrice.wry.wryparser.sourceparser.WrySourceParser;
+import io.github.shamrice.wry.wryparser.story.Story;
 import org.apache.log4j.Logger;
 import picocli.CommandLine;
 
@@ -32,6 +34,10 @@ public class Application implements Callable<Void> {
             description = "File with list of sub names to exclude from story pages.")
     private File excludeSubNamesFile;
 
+    @CommandLine.Option(names = { "-p", "--play"},
+            description = "Run debug game in interactive mode after parsing of source file.")
+    private boolean runGame = false;
+
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Displays help.")
     boolean isHelpRequested = false;
 
@@ -59,7 +65,12 @@ public class Application implements Callable<Void> {
             logger.info("Creating WrySourceParser.");
             WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile);
 
-            wrySourceParser.run();
+            List<Story> parsedStories = wrySourceParser.run();
+
+            if (parsedStories != null && runGame) {
+                GameRunner gameRunner = new GameRunner(parsedStories);
+                gameRunner.run();
+            }
 
 
         } catch (Exception ex) {

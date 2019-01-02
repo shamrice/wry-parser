@@ -5,7 +5,6 @@ import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StoryLinker {
@@ -44,7 +43,7 @@ public class StoryLinker {
 
     }
 
-    public Story link(Story story, List<StoryPage> storyPages) {
+    public void link(Story story, List<StoryPage> storyPages) {
         logger.info("Linking pages to story : " + story.getStoryName());
 
         int pregamePageId = -1;
@@ -63,13 +62,12 @@ public class StoryLinker {
             }
         }
 
-
+        //recursive method that will traverse through all pages in story.
         traverseStory(story.getStoryId(), storyPages.get(pregamePageId), storyPages);
-
 
         //add pages to story.
         for (StoryPage page : storyPages) {
-            if (page.getStoryPageId() == story.getStoryId()) {
+            if (page.getSourceStoryId() == story.getStoryId()) {
                 logger.info("Adding page " + page.getStoryPageId() + "-" + page.getOriginalSubName()
                         + " to story " + story.getStoryName());
                 story.addPage(page);
@@ -85,43 +83,36 @@ public class StoryLinker {
             }
         }
 
-
-        return story;
     }
 
-    private void traverseStory(int storyId, StoryPage page, List<StoryPage> allPages) {
+    private void traverseStory(int storyId, StoryPage currentPage, List<StoryPage> allPages) {
 
-        // TODO : causing stack over flow. needs to be re-thunk.
-        // TODO : adding check for choiceid = -1 caused spy adventure to get stuck in infinite loop
-        // TODO : infinite loop is caused by story's option to choose between 2am and 4pm over and over again.
-        // TODO : traversal limits on choices seems to help. needs more fine tuning..........
+        // TODO : seems to mostly work now. Need to fix failed parsed pages as well as gameover / win screens.
 
-
-        for (PageChoice choice : page.getPageChoices()) {
-            logger.info("Page " + page.getOriginalSubName() + " choice text= " + choice.getChoiceText()
+        for (PageChoice choice : currentPage.getPageChoices()) {
+            logger.info("Page " + currentPage.getOriginalSubName() + " choice text= " + choice.getChoiceText()
                     + " choice dest= " + choice.getDestinationSubName());
 
             if (choice.getTraverseCount() < 10 && !choice.isParsed()) {
 
-                if (!page.isParsed() && choice.getDestinationPageId() != -1) {
+                if (choice.getDestinationPageId() != -1) {
 
                     int nextPageId = choice.getDestinationPageId();
 
-                    StoryPage destPage = allPages.get(nextPageId);
+                    StoryPage nextPage = allPages.get(nextPageId);
 
-                    if (!destPage.isParsed()) {
+                    choice.incrementTraverseCount();
+                    choice.setParsed(true);
 
-                        choice.incrementTraverseCount();
-                        choice.setParsed(true);
+                    currentPage.setSourceStoryId(storyId);
 
-                        page.setSourceStoryId(storyId);
-                        traverseStory(storyId, allPages.get(nextPageId), allPages);
-                    }
+                    traverseStory(storyId, nextPage, allPages);
+
                 }
 
                 if (choice.getDestinationPageId() == -1) {
-                    page.setParsed(true);
-                    page.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
+                    currentPage.setParsed(true);
+                    currentPage.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
                             + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
                 }
             } else {
@@ -129,10 +120,10 @@ public class StoryLinker {
             }
         }
 
-        page.setParsed(true);
-        page.setStatusMessage("Finishing linking page to story");
+        currentPage.setParsed(true);
+        currentPage.setStatusMessage("Finishing linking page to story");
 
-        logger.info("Finished linking page " + page.getStoryPageId() + "-" + page.getOriginalSubName()
+        logger.info("Finished linking page " + currentPage.getStoryPageId() + "-" + currentPage.getOriginalSubName()
                 + " to story Id " + storyId);
     }
 
