@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.TITLE_SCREEN_SUB_NAME;
+
 public class Application implements Callable<Void> {
 
     private static final Logger logger = Logger.getLogger(Application.class);
@@ -69,6 +71,7 @@ public class Application implements Callable<Void> {
 
             if (parsedStories != null && runGame) {
                 GameRunner gameRunner = new GameRunner(parsedStories);
+                gameRunner.displayTitleScreen(wrySourceParser.getSubDisplayData(TITLE_SCREEN_SUB_NAME));
                 gameRunner.run();
             }
 

@@ -16,13 +16,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
+
 public class WrySourceParser {
 
     private final static Logger logger = Logger.getLogger(WrySourceParser.class);
-
-    private final static String CHOICE_REGEX_PATTERN = "^[0-9].*\\).*";
-    private final static String STORY_SUB_NAME2 = "gameselect2";
-    private final static String STORY_SUB_NAME1 = "gameselect";
 
     private File wrySourceFile;
 
@@ -35,6 +33,25 @@ public class WrySourceParser {
     public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile) {
         this.wrySourceFile = wrySourceFile;
         this.excludeFilters = excludeFilters;
+    }
+
+    public List<String> getSubDisplayData(String subName) {
+
+        List<String> rawSubDataSelected = rawSubData.get(subName);
+        List<String> rawPrintDataToReturn = new ArrayList<>();
+
+        if (rawSubDataSelected != null) {
+            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+            if (cmdExcludeFilter != null) {
+                for (String lineData : rawSubDataSelected) {
+                    if (!cmdExcludeFilter.isExcludedWordInLine(lineData)) {
+                        rawPrintDataToReturn.add(lineData);
+                    }
+                }
+            }
+        }
+
+        return rawPrintDataToReturn;
     }
 
     public List<Story> run() throws IOException {
@@ -79,7 +96,6 @@ public class WrySourceParser {
                 }
 
                 if (isSub) {
-                    //logger.debug("Subname = " + subName + " Adding current line " + currentLine);
                     rawLineData.add(currentLine);
                 }
 
@@ -160,30 +176,35 @@ public class WrySourceParser {
                     storyPage.setWinPage(isWinPage);
                     storyPage.setPreGamePage(isPreGamePage);
 
-                    //if gameover and win screens, there are no choices to add.
+                    // populate choices for regular story page.
                     if (!isGameOverPage && !isWinPage && !isPreGamePage) {
                         List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
 
                         for (PageChoice choice : pageChoices) {
                             choice.setSourcePageId(pageId);
-                            //choice.setParsed(true);
                             choice.setStatusMessage("Choice finished parsing");
                         }
 
                         storyPage.setPageChoices(pageChoices);
 
-                    } else if (isPreGamePage) {
-                        String destinationSub = getDestinationSubOnPreGame(rawSubLineData);
+                    //populate choices for pregame, win and game over pages.
+                    } else {
 
-                        PageChoice pregameChoice = new PageChoice(1, "", destinationSub);
+                        String destinationSub = null;
+
+                        if (isPreGamePage) {
+                            destinationSub = getDestinationSubOnPreGame(rawSubLineData);
+                        } else {
+                            //win or game over screen
+                            destinationSub = TITLE_SCREEN_DEST_NAME;
+                        }
+
+                        PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
                         pregameChoice.setSourcePageId(pageId);
-                        //pregameChoice.setParsed(true);
                         pregameChoice.setStatusMessage("Pregame choice finished parsing");
 
                         storyPage.addPageChoice(pregameChoice);
 
-                    } else {
-                        logger.info("generatePages :: SubName : " + subName + " is a Game Over or Win screen.");
                     }
 
                     storyPage.setStatusMessage("Ready for story linking");

@@ -4,11 +4,11 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.GAME_OVER_SUB_NAME;
+
 public class PageValidator {
 
     private final static Logger logger = Logger.getLogger(PageValidator.class);
-
-    private final static String GAME_OVER_SUB_NAME = "Gameover";
 
     public static boolean isValidPage(List<String> subLineData) {
 

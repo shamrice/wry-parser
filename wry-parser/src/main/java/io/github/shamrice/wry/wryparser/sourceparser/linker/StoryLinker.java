@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
+
 public class StoryLinker {
 
     private final static Logger logger = Logger.getLogger(StoryLinker.class);
@@ -22,19 +24,22 @@ public class StoryLinker {
 
             //set choices destination page id for the current page.
             for (PageChoice choice : page.getPageChoices()) {
-                for (StoryPage page2 : storyPages) {
-                    if (choice.getDestinationSubName().equals(page2.getOriginalSubName())) {
-                        logger.info("Found destination pageId " + page2.getStoryPageId()
-                                + "-" + page2.getOriginalSubName() + " "
-                                + " for choice " + choice.getChoiceText());
+                if (choice.getDestinationSubName().equals(TITLE_SCREEN_DEST_NAME)) {
+                    choice.setDestinationPageId(TITLE_SCREEN_PAGE_ID);
+                } else {
+                    for (StoryPage page2 : storyPages) {
+                        if (choice.getDestinationSubName().equals(page2.getOriginalSubName())) {
+                            logger.info("Found destination pageId " + page2.getStoryPageId()
+                                    + "-" + page2.getOriginalSubName() + " "
+                                    + " for choice " + choice.getChoiceText());
 
-                        choice.setDestinationPageId(page2.getStoryPageId());
-                        //choice.setParsed(true);
-                        choice.setStatusMessage("Finished linking and parsing choice");
-                        choicesLinked++;
+                            choice.setDestinationPageId(page2.getStoryPageId());
+                            choice.setStatusMessage("Finished linking dest page id to choice");
+                            choicesLinked++;
+                        }
                     }
+                    numChoices++;
                 }
-                numChoices++;
             }
         }
 
@@ -46,7 +51,7 @@ public class StoryLinker {
     public void link(Story story, List<StoryPage> storyPages) {
         logger.info("Linking pages to story : " + story.getStoryName());
 
-        int pregamePageId = -1;
+        int pregamePageId = PAGE_NOT_FOUND_ID;
 
         //set pregame start
         for (StoryPage page : storyPages) {
@@ -74,13 +79,18 @@ public class StoryLinker {
             }
         }
 
+        int failedParsedChoices = 0;
         for (StoryPage page : storyPages) {
             for (PageChoice choice : page.getPageChoices()) {
                 if (!choice.isParsed()) {
                     logger.error("Failed to parse choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
                             + " for page " + page.getOriginalSubName());
+                    failedParsedChoices++;
                 }
             }
+        }
+        if (failedParsedChoices > 0) {
+            logger.error("Number of failed choices parsed and linked = " + failedParsedChoices);
         }
 
     }
@@ -95,23 +105,26 @@ public class StoryLinker {
 
             if (choice.getTraverseCount() < 10 && !choice.isParsed()) {
 
-                if (choice.getDestinationPageId() != -1) {
-
-                    int nextPageId = choice.getDestinationPageId();
-
-                    StoryPage nextPage = allPages.get(nextPageId);
-
+                if (choice.getDestinationPageId() != PAGE_NOT_FOUND_ID) {
                     choice.incrementTraverseCount();
                     choice.setParsed(true);
-
                     currentPage.setSourceStoryId(storyId);
 
-                    traverseStory(storyId, nextPage, allPages);
+                    try {
+                        int nextPageId = choice.getDestinationPageId();
+                        StoryPage nextPage = allPages.get(nextPageId);
 
+                        traverseStory(storyId, nextPage, allPages);
+
+                    } catch (IndexOutOfBoundsException ex) {
+
+                        logger.error(ex);
+                        logger.info("currentPage " + currentPage.getOriginalSubName() + " destination is " +
+                                choice.getDestinationSubName() + " with id " + choice.getDestinationPageId() +
+                                " so skipping further story traversal.");
+                    }
                 }
-
-                if (choice.getDestinationPageId() == -1) {
-                    currentPage.setParsed(true);
+                if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
                     currentPage.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
                             + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
                 }
@@ -130,7 +143,7 @@ public class StoryLinker {
     private void logFailedChoiceLinks(List<StoryPage> storyPages) {
         for (StoryPage page : storyPages) {
             for (PageChoice choice : page.getPageChoices()) {
-                if (choice.getDestinationPageId() == -1) {
+                if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
                     logger.error("Failed to link destination pageId for choice - " + choice.getChoiceId()
                             + "-" + choice.getChoiceText() + " on page " + page.getStoryPageId()
                             + "-" + page.getOriginalSubName() + ". Attempted destination sub for choice = "

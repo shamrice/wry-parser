@@ -3,11 +3,17 @@ package io.github.shamrice.wry.wryparser.game;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Scanner;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.PAGE_NOT_FOUND_ID;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.TITLE_SCREEN_PAGE_ID;
+
 public class GameRunner {
+
+    private final static Logger logger = Logger.getLogger(GameRunner.class);
 
     private List<Story> storyList;
 
@@ -15,7 +21,16 @@ public class GameRunner {
         this.storyList = storyList;
     }
 
+    public void displayTitleScreen(List<String> titleScreenData) {
+        for (String line : titleScreenData) {
+            line = line.replace("PRINT", "");
+            line = line.replace("\"", "");
+            System.out.println(line);
+        }
+    }
+
     public void run() {
+
         System.out.println("\n\nSelect a story:");
         for (Story story : storyList) {
             System.out.println(" " + story.getStoryId() + ") " + story.getStoryName());
@@ -45,6 +60,7 @@ public class GameRunner {
 
         StoryPage currentPage = null;
 
+        logger.debug("************ STORY PAGES ********************************");
         for (StoryPage page : story.getPages()) {
             page.logStoryPageDetails();
 
@@ -53,9 +69,18 @@ public class GameRunner {
             }
         }
 
-        if (currentPage != null) {
-            while (!currentPage.isWinPage() && !currentPage.isGameOverPage()) {
+        logger.debug("*********** STORY Game over screens *******************");
+        for (StoryPage page : story.getPages()) {
+            if (page.isGameOverPage()) {
+                page.logStoryPageDetails();
+            }
+        }
 
+        if (currentPage != null) {
+
+            int destinationPageId;
+
+            do {
                 System.out.println(currentPage.getStoryPageId() + "-" + currentPage.getOriginalSubName());
                 System.out.println(currentPage.getPageText());
                 System.out.println("\n");
@@ -72,21 +97,36 @@ public class GameRunner {
 
                 }
 
-                int destinationPageId = -1;
+                //get destination page id
+                destinationPageId = PAGE_NOT_FOUND_ID;
                 for (PageChoice choice : currentPage.getPageChoices()) {
+                    logger.debug("Potential choice destinations= choice id = " + choice.getChoiceId() +
+                            " dest info :: pageId=" + choice.getDestinationPageId() + " subName=" +
+                            choice.getDestinationSubName());
+
                     if (choice.getChoiceId() == inputChoice) {
                         destinationPageId = choice.getDestinationPageId();
                     }
                 }
 
+                //search story for that destination page id
                 for (StoryPage page : story.getPages()) {
                     if (page.getStoryPageId() == destinationPageId) {
                         currentPage = page;
                     }
                 }
+            } while (destinationPageId != PAGE_NOT_FOUND_ID && destinationPageId != TITLE_SCREEN_PAGE_ID);
+
+            if (destinationPageId == TITLE_SCREEN_PAGE_ID) {
+                logger.debug("Game over or won. Returning to title screen");
+            } else if (destinationPageId == PAGE_NOT_FOUND_ID) {
+                logger.debug("Destination page not found. Quitting back to title screen. Double check parsing results.");
             }
         }
 
+
+
+        //return to menu if page not found or dest is title screen.
         run();
 
     }
