@@ -23,8 +23,9 @@ public class WrySourceParser {
     private final static Logger logger = Logger.getLogger(WrySourceParser.class);
 
     private File wrySourceFile;
-
     private List<ExcludeFilter> excludeFilters;
+    private boolean failOnErrors = false;
+
     private List<Story> storyData = new ArrayList<>();
     private Map<String, List<String>> rawSubData = new HashMap<>();
     private List<String> failedStoryPagesSubNames = new ArrayList<>();
@@ -33,6 +34,11 @@ public class WrySourceParser {
     public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile) {
         this.wrySourceFile = wrySourceFile;
         this.excludeFilters = excludeFilters;
+    }
+
+    public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile, boolean forceContinueOnErrors) {
+        this(excludeFilters, wrySourceFile);
+        this.failOnErrors = !forceContinueOnErrors;
     }
 
     public List<String> getSubDisplayData(String subName) {
@@ -92,7 +98,6 @@ public class WrySourceParser {
                     isSub = true;
                     subName = currentLine.split("\\ ")[1];
                     rawLineData = new ArrayList<>();
-
                 }
 
                 if (isSub) {
@@ -226,18 +231,23 @@ public class WrySourceParser {
         failedStoryPagesSubNames.forEach( name -> logger.error("Failed to parse story page with sub name : " + name));
         logger.error("Total failed parsed subs: " + failedStoryPagesSubNames.size());
 
+        if (failOnErrors && failedStoryPagesSubNames.size() > 0) {
+            logger.error("Flag set to fail on errors. Run stopping.");
+            System.exit(-1);
+        }
+
         return storyPages;
 
     }
 
     private void linkDestinationPagesToChices(List<StoryPage> unlinkedStories) {
-        StoryLinker linker = new StoryLinker();
+        StoryLinker linker = new StoryLinker(failOnErrors);
         linker.linkDestinationPageIdsToChoices(unlinkedStories);
     }
 
     private void linkStories(List<StoryPage> unlinkedStoryPages) {
 
-        StoryLinker linker = new StoryLinker();
+        StoryLinker linker = new StoryLinker(failOnErrors);
 
         for (Story story : storyData) {
             linker.link(story, unlinkedStoryPages);
@@ -324,6 +334,10 @@ public class WrySourceParser {
         }
 
         logger.error("Unable to find destination sub on pregame screen. Returning null.");
+        if (failOnErrors) {
+            logger.error("Fail on error flag is set. Ending run.");
+            System.exit(-2);
+        }
         return null;
     }
 

@@ -40,6 +40,10 @@ public class Application implements Callable<Void> {
             description = "Run debug game in interactive mode after parsing of source file.")
     private boolean runGame = false;
 
+    @CommandLine.Option(names = { "-f", "--force"},
+            description = "Force parsing to continue even if there are failures encountered.")
+    boolean forceContinueOnErrors = false;
+
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Displays help.")
     boolean isHelpRequested = false;
 
@@ -65,7 +69,7 @@ public class Application implements Callable<Void> {
             excludeFilters.add(ExcludeFilterBuilder.build(ExcludeFilterType.STORY_PAGE_SUB_NAMES, excludeSubNamesFile));
 
             logger.info("Creating WrySourceParser.");
-            WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile);
+            WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile, forceContinueOnErrors);
 
             List<Story> parsedStories = wrySourceParser.run();
 

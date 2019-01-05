@@ -13,6 +13,14 @@ public class StoryLinker {
 
     private final static Logger logger = Logger.getLogger(StoryLinker.class);
 
+    private boolean failOnError =false;
+
+    public StoryLinker() {}
+
+    public StoryLinker(boolean failOnError) {
+        this.failOnError = failOnError;
+    }
+
 
     public void linkDestinationPageIdsToChoices(List<StoryPage> storyPages) {
 
@@ -45,7 +53,6 @@ public class StoryLinker {
 
         logger.info("Linked " + choicesLinked + " destination pages for " + numChoices + " choices");
         logFailedChoiceLinks(storyPages);
-
     }
 
     public void link(Story story, List<StoryPage> storyPages) {
@@ -91,6 +98,10 @@ public class StoryLinker {
         }
         if (failedParsedChoices > 0) {
             logger.error("Number of failed choices parsed and linked = " + failedParsedChoices);
+            if (failOnError) {
+                logger.error("Fail on error flag is set so ending run.");
+                System.exit(-5);
+            }
         }
 
     }
@@ -122,6 +133,10 @@ public class StoryLinker {
                         logger.info("currentPage " + currentPage.getOriginalSubName() + " destination is " +
                                 choice.getDestinationSubName() + " with id " + choice.getDestinationPageId() +
                                 " so skipping further story traversal.");
+                        if (failOnError) {
+                            logger.error("Fail on error flag is set so ending run.");
+                            System.exit(-4);
+                        }
                     }
                 }
                 if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
@@ -141,6 +156,8 @@ public class StoryLinker {
     }
 
     private void logFailedChoiceLinks(List<StoryPage> storyPages) {
+        boolean isFailure = false;
+
         for (StoryPage page : storyPages) {
             for (PageChoice choice : page.getPageChoices()) {
                 if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
@@ -148,8 +165,14 @@ public class StoryLinker {
                             + "-" + choice.getChoiceText() + " on page " + page.getStoryPageId()
                             + "-" + page.getOriginalSubName() + ". Attempted destination sub for choice = "
                             + choice.getDestinationSubName());
+                    isFailure = true;
                 }
             }
+        }
+
+        if (failOnError && isFailure) {
+            logger.error("Linking choices failed and fail on error flag is set. Ending run.");
+            System.exit(-3);
         }
     }
 
