@@ -47,12 +47,9 @@ public class WrySourceParser {
         List<String> rawPrintDataToReturn = new ArrayList<>();
 
         if (rawSubDataSelected != null) {
-            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
-            if (cmdExcludeFilter != null) {
-                for (String lineData : rawSubDataSelected) {
-                    if (!cmdExcludeFilter.isExcludedWordInLine(lineData)) {
-                        rawPrintDataToReturn.add(lineData);
-                    }
+            for (String lineData : rawSubDataSelected) {
+                if (lineData.startsWith(PRINT_COMMAND)) {
+                    rawPrintDataToReturn.add(lineData);
                 }
             }
         }
@@ -346,7 +343,7 @@ public class WrySourceParser {
         StringBuilder pageStoryText = new StringBuilder();
 
         for (String line : rawSubLineData) {
-            if (line.startsWith("PRINT")) {
+            if (line.startsWith(PRINT_COMMAND)) {
                 String trimmedLine = LineTrimmer.trimPrintCommandsAndSpaces(line);
 
                 if (!trimmedLine.isEmpty() && !trimmedLine.matches(CHOICE_REGEX_PATTERN)) {
