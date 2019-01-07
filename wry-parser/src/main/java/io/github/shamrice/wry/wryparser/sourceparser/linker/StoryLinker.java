@@ -2,6 +2,7 @@ package io.github.shamrice.wry.wryparser.sourceparser.linker;
 
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
+import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
@@ -64,7 +65,8 @@ public class StoryLinker {
         for (StoryPage page : storyPages) {
 
             //set source story id for pregame page.
-            if (page.getOriginalSubName().equals(story.getFirstPageSubName()) && page.isPreGamePage()) {
+            if (page.getOriginalSubName().equals(story.getFirstPageSubName())
+                    && page.getPageType() == PageType.PREGAME_PAGE) {
                 logger.info("Found pregame page " + story.getFirstPageSubName() + " for story " + story.getStoryName()
                         + " page sub name = " + page.getOriginalSubName() + " id= " + page.getStoryPageId());
 
@@ -91,7 +93,8 @@ public class StoryLinker {
             for (PageChoice choice : page.getPageChoices()) {
                 if (!choice.isParsed()) {
                     logger.error("Failed to parse choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
-                            + " for page " + page.getOriginalSubName());
+                            + " for page " + page.getOriginalSubName() + " destination PageId = " + choice.getDestinationPageId()
+                            + " destination Sub name = " + choice.getDestinationSubName());
                     failedParsedChoices++;
                 }
             }
@@ -112,20 +115,31 @@ public class StoryLinker {
 
         for (PageChoice choice : currentPage.getPageChoices()) {
             logger.info("Page " + currentPage.getOriginalSubName() + " choice text= " + choice.getChoiceText()
-                    + " choice dest= " + choice.getDestinationSubName());
+                    + " choice dest= " + choice.getDestinationSubName() + " choice destid= " + choice.getDestinationPageId());
 
             if (choice.getTraverseCount() < 10 && !choice.isParsed()) {
 
-                if (choice.getDestinationPageId() != PAGE_NOT_FOUND_ID) {
+                int nextPageId = choice.getDestinationPageId();
+
+                //if (choice.getDestinationPageId() != PAGE_NOT_FOUND_ID) {
+                if (nextPageId != PAGE_NOT_FOUND_ID) {
                     choice.incrementTraverseCount();
                     choice.setParsed(true);
                     currentPage.setSourceStoryId(storyId);
 
                     try {
-                        int nextPageId = choice.getDestinationPageId();
-                        StoryPage nextPage = allPages.get(nextPageId);
+                        //int nextPageId = choice.getDestinationPageId();
 
-                        traverseStory(storyId, nextPage, allPages);
+                        //if (nextPageId != TITLE_SCREEN_PAGE_ID) {
+                        if (nextPageId != TITLE_SCREEN_PAGE_ID) {
+                            StoryPage nextPage = allPages.get(nextPageId);
+                            traverseStory(storyId, nextPage, allPages);
+                        }
+                        //} else {
+                        //    logger.info("currentPage " + currentPage.getOriginalSubName() + " destination is " +
+                        //            choice.getDestinationSubName() + " with id " + choice.getDestinationPageId()
+                        //            + " :: is main menu screen. Skipping.");
+                        //}
 
                     } catch (IndexOutOfBoundsException ex) {
 
@@ -137,11 +151,23 @@ public class StoryLinker {
                             logger.error("Fail on error flag is set so ending run.");
                             System.exit(-4);
                         }
+
                     }
                 }
-                if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
+                //if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
+                else {
+
+
                     currentPage.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
                             + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = -1");
+
+                    logger.error("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
+                            + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = "
+                            + nextPageId);
+                    if (failOnError) {
+                        logger.error("Fail on error flag is set so ending run.");
+                        System.exit(-6);
+                    }
                 }
             } else {
                 logger.error("Exceeded maximum number of traversals through choice " + choice.getChoiceId() + "-" + choice.getChoiceText());

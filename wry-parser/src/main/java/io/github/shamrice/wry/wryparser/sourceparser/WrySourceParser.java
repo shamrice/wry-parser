@@ -7,6 +7,7 @@ import io.github.shamrice.wry.wryparser.sourceparser.linker.StoryLinker;
 import io.github.shamrice.wry.wryparser.sourceparser.validate.PageValidator;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
+import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
@@ -161,25 +162,78 @@ public class WrySourceParser {
             if (subNameExcludeFilter != null && !subNameExcludeFilter.isInExcluded(subName)) {
 
                 List<String> rawSubLineData = rawSubData.get(subName);
+                /*
                 boolean isValidPage = PageValidator.isValidPage(rawSubLineData);
+
                 boolean isGameOverPage = PageValidator.isGameOverScreen(rawSubLineData);
                 boolean isWinPage = PageValidator.isWinningScreen(rawSubLineData);
                 boolean isPreGamePage = PageValidator.isPreGameScreen(rawSubLineData);
+                boolean isPassThroughPage = PageValidator.isPassThroughPage(rawSubLineData);
+                */
+                PageType pageType = PageValidator.getPageType(rawSubLineData);
 
-                if (rawSubLineData != null && (isPreGamePage || isValidPage || isGameOverPage || isWinPage)) {
+                if (rawSubLineData != null) {
 
-                    logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
+                    //logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
 
                     String pageStoryText = getPageStoryText(rawSubLineData);
 
                     StoryPage storyPage = new StoryPage(pageId, subName, pageStoryText);
+                    storyPage.setPageType(pageType);
+
+                    switch (pageType) {
+
+                        case REGULAR_PAGE:
+                            logger.debug("Sub " + subName + " is a pass through or regular page.");
+                            List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
+
+                            for (PageChoice choice : pageChoices) {
+                                choice.setSourcePageId(pageId);
+                                choice.setStatusMessage("Choice finished parsing");
+                            }
+
+                            storyPage.setPageChoices(pageChoices);
+                            break;
+
+                        case PREGAME_PAGE:
+                        case WIN_PAGE:
+                        case GAMEOVER_PAGE:
+                        case PASS_THROUGH_PAGE:
+                            String destinationSub = null;
+
+                            if (pageType == PageType.PREGAME_PAGE || pageType == PageType.PASS_THROUGH_PAGE) {
+                                logger.debug("Sub " + subName + " is a pass through or pre game page.");
+                                destinationSub = getDestinationSubOnSpecialPage(rawSubLineData);
+                            } else {
+                                logger.debug("Sub " + subName + " is a win or gameover page page.");
+                                //win or game over screen
+                                destinationSub = TITLE_SCREEN_DEST_NAME;
+                            }
+
+                            PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
+                            pregameChoice.setSourcePageId(pageId);
+
+                            pregameChoice.setStatusMessage("Special page choice finished parsing");
+
+                            logger.info("Special page choice parsing finished for sub " + subName
+                                    + " destination sub = " + destinationSub);
+
+                            storyPage.addPageChoice(pregameChoice);
+                            break;
+
+                        default:
+                            logger.error("Failed to find page type for " + subName + " of type " + pageType.name());
+                    }
+
+                    /*
                     storyPage.setValidPage(isValidPage);
                     storyPage.setGameOverPage(isGameOverPage);
                     storyPage.setWinPage(isWinPage);
                     storyPage.setPreGamePage(isPreGamePage);
+                    */
 
                     // populate choices for regular story page.
-                    if (!isGameOverPage && !isWinPage && !isPreGamePage) {
+                    /*if (!isGameOverPage && !isWinPage && !isPreGamePage) {
                         List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
 
                         for (PageChoice choice : pageChoices) {
@@ -188,13 +242,14 @@ public class WrySourceParser {
                         }
 
                         storyPage.setPageChoices(pageChoices);
-
+                    */
                     //populate choices for pregame, win and game over pages.
+                    /*
                     } else {
 
                         String destinationSub = null;
 
-                        if (isPreGamePage) {
+                        if (!isWinPage && !isGameOverPage) {
                             destinationSub = getDestinationSubOnPreGame(rawSubLineData);
                         } else {
                             //win or game over screen
@@ -208,6 +263,7 @@ public class WrySourceParser {
                         storyPage.addPageChoice(pregameChoice);
 
                     }
+                    */
 
                     storyPage.setStatusMessage("Ready for story linking");
                     storyPages.add(storyPage);
@@ -222,7 +278,7 @@ public class WrySourceParser {
         }
 
         for (StoryPage storyPage : storyPages) {
-            storyPage.logStoryPageDetails();
+            storyPage.logStoryPageDetails("WrySourceParser::generatePages");
         }
 
         failedStoryPagesSubNames.forEach( name -> logger.error("Failed to parse story page with sub name : " + name));
@@ -310,27 +366,29 @@ public class WrySourceParser {
         List<PageChoice> pageChoices = new LinkedList<>();
 
         for (int id : choiceDestinations.keySet()) {
-            pageChoices.add(new PageChoice(id, choicesText.get(id), choiceDestinations.get(id)));
+            if (id < 10) {
+                pageChoices.add(new PageChoice(id, choicesText.get(id), choiceDestinations.get(id)));
+            }
         }
 
         return pageChoices;
     }
 
-    private String getDestinationSubOnPreGame(List<String> rawSubData) {
+    private String getDestinationSubOnSpecialPage(List<String> rawSubData) {
 
         int index = rawSubData.indexOf("END SUB") - 1;
 
         while (index > 0) {
             String possibleDest = rawSubData.get(index);
             if (!possibleDest.isEmpty()) {
-                logger.info("Pregame screen destination = " + possibleDest);
+                logger.info("Special page screen destination = " + possibleDest);
                 return possibleDest;
             } else {
                 index--;
             }
         }
 
-        logger.error("Unable to find destination sub on pregame screen. Returning null.");
+        logger.error("Unable to find destination sub on special screen. Returning null.");
         if (failOnErrors) {
             logger.error("Fail on error flag is set. Ending run.");
             System.exit(-2);

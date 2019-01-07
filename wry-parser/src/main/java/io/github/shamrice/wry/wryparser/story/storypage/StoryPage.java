@@ -16,10 +16,13 @@ public class StoryPage {
     private String originalSubName;
     private String pageText;
     private boolean isParsed = false;
+    /*
     private boolean isValidPage = false;
     private boolean isGameOverPage = false;
     private boolean isWinPage = false;
     private boolean isPreGamePage = false;
+    */
+    private PageType pageType = PageType.NOT_SET;
     private String statusMessage;
     private List<PageChoice> pageChoices = new ArrayList<>();
 
@@ -77,7 +80,7 @@ public class StoryPage {
     public void addPageChoice(PageChoice pageChoice) {
         this.pageChoices.add(pageChoice);
     }
-
+/*
     public boolean isValidPage() {
         return isValidPage;
     }
@@ -85,8 +88,29 @@ public class StoryPage {
     public void setValidPage(boolean validPage) {
         isValidPage = validPage;
     }
+*/
+    public void logStoryPageDetails(String sourceMethod) {
 
-    public void logStoryPageDetails() {
+        logger.info("logStoryPageDetails :: sourceMethod :: " + sourceMethod
+                + " sourceStoryId=" + sourceStoryId + " : storyPageId=" + storyPageId
+                + " : originalSubName=" + originalSubName + " : pageText=" + pageText + " : isParsed="
+                + isParsed + " : pageType=" + pageType.name()
+                + " : statusMessage=" + statusMessage);
+
+        for (PageChoice choice : pageChoices) {
+            StringBuilder sbLog = new StringBuilder("logStoryPageDetails :: PageChoices : ");
+            sbLog.append("sourceMethod :: " + sourceMethod);
+            sbLog.append(" : choiceForSubName= " + originalSubName);
+            sbLog.append(" : choiceId=" + choice.getChoiceId());
+            sbLog.append(" : sourcePageId= " + choice.getSourcePageId());
+            sbLog.append(" : destinationPageId= " + choice.getDestinationPageId());
+            sbLog.append(" : destinationSubName=" + choice.getDestinationSubName());
+            sbLog.append(" : choiceText=" + choice.getChoiceText());
+            sbLog.append(" : isParsed=" + choice.isParsed());
+            sbLog.append(" : statusMessage=" + choice.getStatusMessage());
+            logger.info(sbLog.toString());
+        }
+        /*
 
         logger.info("logStoryPageDetails :: sourceStoryId=" + sourceStoryId + " : storyPageId=" + storyPageId
                 + " : originalSubName=" + originalSubName + " : pageText=" + pageText + " : isParsed="
@@ -105,9 +129,10 @@ public class StoryPage {
             sbLog.append(" : statusMessage=" + choice.getStatusMessage());
             logger.info(sbLog.toString());
         }
+        */
 
     }
-
+/*
     public boolean isGameOverPage() {
         return isGameOverPage;
     }
@@ -130,5 +155,13 @@ public class StoryPage {
 
     public void setPreGamePage(boolean preGamePage) {
         isPreGamePage = preGamePage;
+    }
+*/
+    public PageType getPageType() {
+        return pageType;
+    }
+
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
     }
 }

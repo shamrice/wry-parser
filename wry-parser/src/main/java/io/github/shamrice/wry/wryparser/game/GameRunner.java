@@ -2,6 +2,7 @@ package io.github.shamrice.wry.wryparser.game;
 
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
+import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
@@ -62,17 +63,17 @@ public class GameRunner {
 
         logger.debug("************ STORY PAGES ********************************");
         for (StoryPage page : story.getPages()) {
-            page.logStoryPageDetails();
+            page.logStoryPageDetails("GameRunner::playStory");
 
-            if (page.isPreGamePage()) {
+            if (page.getPageType() == PageType.PREGAME_PAGE) {
                 currentPage = page;
             }
         }
 
         logger.debug("*********** STORY Game over screens *******************");
         for (StoryPage page : story.getPages()) {
-            if (page.isGameOverPage()) {
-                page.logStoryPageDetails();
+            if (page.getPageType() == PageType.GAMEOVER_PAGE) {
+                page.logStoryPageDetails("GameRunner::playStory");
             }
         }
 
