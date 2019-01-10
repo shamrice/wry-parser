@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ExcludeFilterBuilder {
 
-    private final static Logger logger = Logger.getLogger(ExcludeFilterBuilder.class);
+    private static final Logger logger = Logger.getLogger(ExcludeFilterBuilder.class);
 
     public static ExcludeFilter build(ExcludeFilterType excludeFilterType, File excludeFilterFile) throws IOException {
 

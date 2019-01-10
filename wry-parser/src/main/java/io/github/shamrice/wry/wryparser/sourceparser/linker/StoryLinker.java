@@ -12,11 +12,9 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class StoryLinker {
 
-    private final static Logger logger = Logger.getLogger(StoryLinker.class);
+    private static final Logger logger = Logger.getLogger(StoryLinker.class);
 
-    private boolean failOnError =false;
-
-    public StoryLinker() {}
+    private boolean failOnError;
 
     public StoryLinker(boolean failOnError) {
         this.failOnError = failOnError;
@@ -88,58 +86,31 @@ public class StoryLinker {
             }
         }
 
-        int failedParsedChoices = 0;
-        for (StoryPage page : storyPages) {
-            for (PageChoice choice : page.getPageChoices()) {
-                if (!choice.isParsed()) {
-                    logger.error("Failed to parse choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
-                            + " for page " + page.getOriginalSubName() + " destination PageId = " + choice.getDestinationPageId()
-                            + " destination Sub name = " + choice.getDestinationSubName());
-                    failedParsedChoices++;
-                }
-            }
-        }
-        if (failedParsedChoices > 0) {
-            logger.error("Number of failed choices parsed and linked = " + failedParsedChoices);
-            if (failOnError) {
-                logger.error("Fail on error flag is set so ending run.");
-                System.exit(-5);
-            }
-        }
-
     }
 
     private void traverseStory(int storyId, StoryPage currentPage, List<StoryPage> allPages) {
 
-        // TODO : seems to mostly work now. Need to fix failed parsed pages as well as gameover / win screens.
+        currentPage.setSourceStoryId(storyId);
+        currentPage.setParsed(true);
+        currentPage.setStatusMessage("Finishing linking page to story");
 
         for (PageChoice choice : currentPage.getPageChoices()) {
             logger.info("Page " + currentPage.getOriginalSubName() + " choice text= " + choice.getChoiceText()
                     + " choice dest= " + choice.getDestinationSubName() + " choice destid= " + choice.getDestinationPageId());
 
-            if (choice.getTraverseCount() < 10 && !choice.isParsed()) {
+            choice.incrementTraversalCount();
+            choice.setParsed(true);
+
+            if (choice.getTraversalCount() < MAX_TRAVERSAL_COUNT) {
 
                 int nextPageId = choice.getDestinationPageId();
 
-                //if (choice.getDestinationPageId() != PAGE_NOT_FOUND_ID) {
-                if (nextPageId != PAGE_NOT_FOUND_ID) {
-                    choice.incrementTraverseCount();
-                    choice.setParsed(true);
-                    currentPage.setSourceStoryId(storyId);
+                if (nextPageId != PAGE_NOT_FOUND_ID && nextPageId != TITLE_SCREEN_PAGE_ID) {
 
                     try {
-                        //int nextPageId = choice.getDestinationPageId();
 
-                        //if (nextPageId != TITLE_SCREEN_PAGE_ID) {
-                        if (nextPageId != TITLE_SCREEN_PAGE_ID) {
-                            StoryPage nextPage = allPages.get(nextPageId);
-                            traverseStory(storyId, nextPage, allPages);
-                        }
-                        //} else {
-                        //    logger.info("currentPage " + currentPage.getOriginalSubName() + " destination is " +
-                        //            choice.getDestinationSubName() + " with id " + choice.getDestinationPageId()
-                        //            + " :: is main menu screen. Skipping.");
-                        //}
+                        StoryPage nextPage = allPages.get(nextPageId);
+                        traverseStory(storyId, nextPage, allPages);
 
                     } catch (IndexOutOfBoundsException ex) {
 
@@ -151,11 +122,9 @@ public class StoryLinker {
                             logger.error("Fail on error flag is set so ending run.");
                             System.exit(-4);
                         }
-
                     }
-                }
-                //if (choice.getDestinationPageId() == PAGE_NOT_FOUND_ID) {
-                else {
+
+                } else if (nextPageId == PAGE_NOT_FOUND_ID) {
 
 
                     currentPage.setStatusMessage("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
@@ -173,9 +142,6 @@ public class StoryLinker {
                 logger.error("Exceeded maximum number of traversals through choice " + choice.getChoiceId() + "-" + choice.getChoiceText());
             }
         }
-
-        currentPage.setParsed(true);
-        currentPage.setStatusMessage("Finishing linking page to story");
 
         logger.info("Finished linking page " + currentPage.getStoryPageId() + "-" + currentPage.getOriginalSubName()
                 + " to story Id " + storyId);

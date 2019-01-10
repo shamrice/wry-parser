@@ -21,7 +21,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class WrySourceParser {
 
-    private final static Logger logger = Logger.getLogger(WrySourceParser.class);
+    private static final Logger logger = Logger.getLogger(WrySourceParser.class);
 
     private File wrySourceFile;
     private List<ExcludeFilter> excludeFilters;
@@ -92,7 +92,6 @@ public class WrySourceParser {
                 if (currentLine.contains("SUB") && !currentLine.equals("END SUB") && !currentLine.contains("GOSUB")
                     && !currentLine.contains("()")) {
 
-                    //logger.debug("Found sub line: " + currentLine);
                     isSub = true;
                     subName = currentLine.split("\\ ")[1];
                     rawLineData = new ArrayList<>();
@@ -149,9 +148,6 @@ public class WrySourceParser {
 
     private List<StoryPage> generatePages() {
 
-        //TODO : need to also differentiate pages like "buysold" which are intermediate pages for info that do not
-        //TODO : cause gameover and return player to previous choice.
-
         int pageId = 0;
         List<StoryPage> storyPages = new ArrayList<>();
 
@@ -162,19 +158,10 @@ public class WrySourceParser {
             if (subNameExcludeFilter != null && !subNameExcludeFilter.isInExcluded(subName)) {
 
                 List<String> rawSubLineData = rawSubData.get(subName);
-                /*
-                boolean isValidPage = PageValidator.isValidPage(rawSubLineData);
 
-                boolean isGameOverPage = PageValidator.isGameOverScreen(rawSubLineData);
-                boolean isWinPage = PageValidator.isWinningScreen(rawSubLineData);
-                boolean isPreGamePage = PageValidator.isPreGameScreen(rawSubLineData);
-                boolean isPassThroughPage = PageValidator.isPassThroughPage(rawSubLineData);
-                */
                 PageType pageType = PageValidator.getPageType(rawSubLineData);
 
                 if (rawSubLineData != null) {
-
-                    //logger.debug("generatePages :: SubName : " + subName + " is valid story page. Processing.");
 
                     String pageStoryText = getPageStoryText(rawSubLineData);
 
@@ -225,46 +212,6 @@ public class WrySourceParser {
                             logger.error("Failed to find page type for " + subName + " of type " + pageType.name());
                     }
 
-                    /*
-                    storyPage.setValidPage(isValidPage);
-                    storyPage.setGameOverPage(isGameOverPage);
-                    storyPage.setWinPage(isWinPage);
-                    storyPage.setPreGamePage(isPreGamePage);
-                    */
-
-                    // populate choices for regular story page.
-                    /*if (!isGameOverPage && !isWinPage && !isPreGamePage) {
-                        List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
-
-                        for (PageChoice choice : pageChoices) {
-                            choice.setSourcePageId(pageId);
-                            choice.setStatusMessage("Choice finished parsing");
-                        }
-
-                        storyPage.setPageChoices(pageChoices);
-                    */
-                    //populate choices for pregame, win and game over pages.
-                    /*
-                    } else {
-
-                        String destinationSub = null;
-
-                        if (!isWinPage && !isGameOverPage) {
-                            destinationSub = getDestinationSubOnPreGame(rawSubLineData);
-                        } else {
-                            //win or game over screen
-                            destinationSub = TITLE_SCREEN_DEST_NAME;
-                        }
-
-                        PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
-                        pregameChoice.setSourcePageId(pageId);
-                        pregameChoice.setStatusMessage("Pregame choice finished parsing");
-
-                        storyPage.addPageChoice(pregameChoice);
-
-                    }
-                    */
-
                     storyPage.setStatusMessage("Ready for story linking");
                     storyPages.add(storyPage);
 
@@ -304,6 +251,13 @@ public class WrySourceParser {
 
         for (Story story : storyData) {
             linker.link(story, unlinkedStoryPages);
+
+            if (story.isParseSuccessful()) {
+                logger.info("Successfully parsed story " + story.getStoryId() + "-" + story.getStoryName());
+            } else if (!story.isParseSuccessful() && failOnErrors) {
+                logger.info("Failed parsed story " + story.getStoryId() + "-" + story.getStoryName());
+                System.exit(-1);
+            }
         }
 
     }

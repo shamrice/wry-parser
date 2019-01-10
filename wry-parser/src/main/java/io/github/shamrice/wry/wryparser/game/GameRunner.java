@@ -14,7 +14,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class GameRunner {
 
-    private final static Logger logger = Logger.getLogger(GameRunner.class);
+    private static final Logger logger = Logger.getLogger(GameRunner.class);
 
     private List<Story> storyList;
 
@@ -95,7 +95,6 @@ public class GameRunner {
                 while (inputChoice < 1) {
                     Scanner reader = new Scanner(System.in);
                     inputChoice = reader.nextInt();
-
                 }
 
                 //get destination page id
@@ -120,12 +119,10 @@ public class GameRunner {
 
             if (destinationPageId == TITLE_SCREEN_PAGE_ID) {
                 logger.debug("Game over or won. Returning to title screen");
-            } else if (destinationPageId == PAGE_NOT_FOUND_ID) {
+            } else  {
                 logger.debug("Destination page not found. Quitting back to title screen. Double check parsing results.");
             }
         }
-
-
 
         //return to menu if page not found or dest is title screen.
         run();

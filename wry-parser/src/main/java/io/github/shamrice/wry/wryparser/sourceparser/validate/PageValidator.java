@@ -9,7 +9,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class PageValidator {
 
-    private final static Logger logger = Logger.getLogger(PageValidator.class);
+    private static final Logger logger = Logger.getLogger(PageValidator.class);
 
     // TODO : This should probably be either a constant or a config value.
     public static boolean isPreGameScreen(String subName) {
