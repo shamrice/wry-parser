@@ -174,8 +174,8 @@ public class WrySourceParser {
                         logger.debug("Generating pages for multi page sub " + subName);
 
                         List<StoryPage> generatedPages = generatePagesFromMultiPage(subName, rawSubLineData, pageId);
-                        //storyPages.addAll(generatedPages);
-                        //pageId += rawSubLineData.size();
+                        storyPages.addAll(generatedPages);
+                        pageId += rawSubLineData.size();
 
                     } else {
 
@@ -245,7 +245,18 @@ public class WrySourceParser {
             }
         }
 
+
         for (StoryPage storyPage : storyPages) {
+            /* TODO : not sure how i feel about that idea below...
+            for (PageChoice choice : storyPage.getPageChoices()) {
+                for (StoryPage page : storyPages) {
+                    if (choice.getDestinationSubName().equals(page.getOriginalSubName())
+                            && page.getPageType() == PageType.MULTI_PAGE) {
+                        //TODO : set the destination sub of the choice to the actual first page?
+                    }
+                }
+            }
+            */
             storyPage.logStoryPageDetails("WrySourceParser::generatePages");
         }
 
@@ -388,63 +399,82 @@ public class WrySourceParser {
         return pageStoryText.toString();
     }
 
-    //TODO : THIS NEEDS TO BE FINISHED BEING FILLED OUT!
     private List<StoryPage> generatePagesFromMultiPage(String originalSubName, List<String> rawSubLineData,
                                                        int currentPageId) {
-
-        // TODO : with each generated page from sub data, set page id and increment currentPageId.
-        // TODO : calling method will update it's pageId counter based on generatedPage's size.
 
         List<StoryPage> generatedPages = new ArrayList<>();
         Map<String, List<String>> rawPages = new HashMap<>();
 
-        int numPages = 0;
-        boolean isFirstPage = true;
+        //add placeholder for original sub name
+        rawPages.put(originalSubName, new ArrayList<>());
+
         boolean isFirstLine = true;
+        boolean isEndOfPage = false;
         String pageName = originalSubName;
         List<String> tempPageData = new ArrayList<>();
 
-        //TODO : sub e4l1's goto e4l1s is going to be a hoot to parse... it's the first line so other
-        //TODO : internal pages mention it but it's also the first page of the multi-page so the original
-        //TODO : reference needs to go to e4l1 no e4l1s like the internal pages do.... yay....
+        ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
 
+        //iterate through subs line data and break it into multiple pages
         for (String line : rawSubLineData) {
 
-            if (!getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS).isExcludedWordInLine(line)) {
+            if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(line)) {
 
-                if (isFirstLine && !line.contains(":")) {
-                    isFirstLine = false;
-                    numPages++;
+                if (!isFirstLine && line.contains(":")) {
+                    isEndOfPage = true;
                 }
 
-                if (line.contains(":") && !isFirstLine) {
-                    numPages++;
+                if (isEndOfPage) {
+                    logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
+                    rawPages.put(pageName, tempPageData);
 
-                    if (isFirstPage) {
-                        isFirstPage = false;
-                        logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
-                        rawPages.put(pageName, tempPageData);
-                    } else {
-                        pageName = line.split(":")[0];
-                        logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
-                        rawPages.put(pageName, tempPageData);
-                    }
                     tempPageData = new ArrayList<>();
+                    isEndOfPage = false;
                 }
 
+                if (line.contains(":")) {
+                    pageName = line.split(":")[0];
+                }
+
+                isFirstLine = false;
                 tempPageData.add(line);
             }
         }
 
-        logger.info("Multi-page sub " + originalSubName + " contains " + numPages + " pages.");
+        logger.info("Multi-page sub " + originalSubName + " contains " + rawPages.size() + " pages.");
 
+        //add found pages and generate choice information for each
+        //TODO : need to generate choices for pass through pages!!
+        for (String rawPageName : rawPages.keySet()) {
+            List<String> rawPage = rawPages.get(rawPageName);
 
-        for (String rawPageNames : rawPages.keySet()) {
-            List<String> rawPage = rawPages.get(rawPageNames);
-            String storyText = getPageStoryText(rawPage);
-            StoryPage storyPage = new StoryPage(currentPageId, rawPageNames, storyText);
-            storyPage.setPageType(PageType.REGULAR_PAGE);
-            generatedPages.add(storyPage);
+            for (String data : rawPage) {
+                logger.debug("Multi-page sub: " + originalSubName + " :: rawPageName: " + rawPageName + " :: data=" + data);
+            }
+
+            //TODO : this is a weird work around for a special case of e4l1 should go to e4l1s as a destination...
+            if (rawPage.size() == 0) {
+                StoryPage storyPage = new StoryPage(currentPageId, rawPageName, "Pass through");
+                storyPage.setPageType(PageType.PASS_THROUGH_PAGE);
+
+                List<PageChoice> pageChoices = new ArrayList<>();
+                PageChoice pageChoice = new PageChoice(1, "Continue", "e4l1s");
+                pageChoices.add(pageChoice);
+
+                storyPage.setPageChoices(pageChoices);
+                generatedPages.add(storyPage);
+
+            } else {
+
+                String storyText = getPageStoryText(rawPage);
+
+                StoryPage storyPage = new StoryPage(currentPageId, rawPageName, storyText);
+                storyPage.setPageType(PageType.REGULAR_PAGE);
+
+                storyPage.setPageChoices(getChoicesForMultiPageSub(rawPage));
+
+                generatedPages.add(storyPage);
+            }
             currentPageId++;
         }
 
@@ -456,5 +486,76 @@ public class WrySourceParser {
         return generatedPages;
     }
 
+    private List<PageChoice> getChoicesForMultiPageSub(List<String> rawSubLineData) {
+        Map<Integer, String> choiceDestinations = new HashMap<>();
+        Map<Integer, String> choicesText = new HashMap<>();
+
+        for (String currentLine : rawSubLineData) {
+
+            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+
+            if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(currentLine)) {
+                currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
+
+                //get choices area of story text
+                if (currentLine.matches(CHOICE_REGEX_PATTERN)) {
+                    String[] idAndText = currentLine.split("\\)");
+
+                    logger.debug("getChoicesForSub :: idAndText[0] = " + idAndText[0]);
+                    logger.debug("getChoicesForSub :: idAndText[1] = " + idAndText[1]);
+
+                    int id = Integer.parseInt(idAndText[0]);
+                    String text = idAndText[1].trim();
+
+                    choicesText.put(id, text);
+                }
+
+                //get choice destinations from if statements
+                if (currentLine.contains("IF") && currentLine.contains("THEN GOTO")) {
+
+                    logger.debug("Multi-sub choice line: " + currentLine);
+                    String condensedLine = currentLine.replace(" ", "");
+                    logger.debug("Multi-sub condensed line: " + condensedLine);
+
+                    try {
+                        int choiceId = Integer.parseInt(condensedLine.substring(
+                                condensedLine.indexOf("=") + 1,
+                                condensedLine.indexOf("=") + 2)); //TODO : major ew
+
+                        String destinationLabel = condensedLine.substring(
+                                condensedLine.lastIndexOf("GOTO") + 4);
+
+                        logger.debug("Multi-sub choice dest=" + choiceId + " :: dest label=" + destinationLabel);
+
+                        choiceDestinations.put(choiceId, destinationLabel);
+                    } catch (Exception ex) {
+                        logger.error("Multi-sub failed: ", ex);
+                        if (failOnErrors) {
+                            System.exit(-9);
+                        }
+                    }
+                }
+            }
+        }
+
+        List<PageChoice> pageChoices = new LinkedList<>();
+
+        try {
+            for (int id : choiceDestinations.keySet()) {
+                if (id < 10) {
+                    logger.info("Adding multi-sub choice " + id + "-" + choicesText.get(id) + " :: dest="
+                            + choiceDestinations.get(id));
+                    pageChoices.add(new PageChoice(id, choicesText.get(id), choiceDestinations.get(id)));
+                }
+            }
+        } catch (Exception ex) {
+            logger.error("Failed to add multi-sub choices", ex);
+            if (failOnErrors) {
+                System.exit(-1);
+            }
+        }
+
+        return pageChoices;
+    }
 
 }

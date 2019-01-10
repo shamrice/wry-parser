@@ -28,7 +28,8 @@ public class Application implements Callable<Void> {
 
     @CommandLine.Option(names = { "-xc", "--exclude-commands" },
             paramLabel = "EXCLUDE_COMMAND_FILE",
-            description = "File with list of BASIC command words to exclude during parsing of Wry Source")
+            description = "File with list of BASIC command words to exclude during parsing of Wry Source",
+            required = true)
     private File excludeCommandFile;
 
     @CommandLine.Option(names = { "-xs", "--exclude-subs" },
