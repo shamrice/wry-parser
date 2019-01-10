@@ -11,6 +11,10 @@ public class PageValidator {
 
     private static final Logger logger = Logger.getLogger(PageValidator.class);
 
+    //TODO : Late pages in Wry Humor and all of Bewildered are getting parsed incorrectly as Game Over pages
+    //TODO : because they do not follow the regular sub conventions of the rest of the game. Need to add
+    //TODO : checks and parsing for that!!!
+
     // TODO : This should probably be either a constant or a config value.
     public static boolean isPreGameScreen(String subName) {
         return (subName.contains("pregame") || subName.equals("ldemo"));
@@ -20,6 +24,10 @@ public class PageValidator {
 
         if (subLineData == null) {
             return PageType.ERROR;
+        }
+
+        if (isMultiPage(subLineData)) {
+            return PageType.MULTI_PAGE;
         }
 
         if (isGameOverScreen(subLineData)) {
@@ -44,6 +52,45 @@ public class PageValidator {
 
         return PageType.ERROR;
 
+    }
+
+    /**
+     * Method used to check if sub has multiple pages on it instead of just one
+     * These pages will require extended special parsing.
+     * @param subLineData raw sub data to check
+     * @return true on multi page sub.
+     */
+    private static boolean isMultiPage(List<String> subLineData) {
+        boolean hasStoryText = false;
+        boolean hasInput = false;
+        boolean hasChoicesText = false;
+        boolean hasGotos = false;
+        boolean hasIfs = false;
+
+        for (String data : subLineData) {
+            if (data.contains("PRINT")) {
+                hasStoryText = true;
+            }
+
+            if (data.contains("INPUT")) {
+                hasInput = true;
+            }
+
+            if (data.contains("1)")) {
+                hasChoicesText = true;
+            }
+
+            if (data.contains("GOTO")) {
+                hasGotos = true;
+            }
+
+            if (data.contains("IF") && data.contains("THEN")) {
+                hasIfs = true;
+            }
+        }
+
+        //if has all these things, most likely is a multi page story sub
+        return hasStoryText && hasInput && hasChoicesText && hasGotos && hasIfs;
     }
 
     private static boolean isValidPage(List<String> subLineData) {

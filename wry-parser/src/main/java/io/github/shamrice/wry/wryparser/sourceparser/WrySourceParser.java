@@ -146,6 +146,7 @@ public class WrySourceParser {
 
     }
 
+    // TODO : this should be refactored to be simpler.
     private List<StoryPage> generatePages() {
 
         int pageId = 0;
@@ -158,65 +159,85 @@ public class WrySourceParser {
             if (subNameExcludeFilter != null && !subNameExcludeFilter.isInExcluded(subName)) {
 
                 List<String> rawSubLineData = rawSubData.get(subName);
-
-                PageType pageType = PageValidator.getPageType(rawSubLineData);
-
                 if (rawSubLineData != null) {
 
-                    String pageStoryText = getPageStoryText(rawSubLineData);
+                    PageType pageType = PageValidator.getPageType(rawSubLineData);
 
-                    StoryPage storyPage = new StoryPage(pageId, subName, pageStoryText);
-                    storyPage.setPageType(pageType);
+                    if (pageType == PageType.MULTI_PAGE) {
 
-                    switch (pageType) {
+                        //multi pages require extra parsing to separate individual pages out.
 
-                        case REGULAR_PAGE:
-                            logger.debug("Sub " + subName + " is a pass through or regular page.");
-                            List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
+                        //TODO : this will require more thinking as it causes the linker to fail.
+                        //TODO : choice goes to multipage sub name, first generated page must match original sub name
+                        //TODO : following pages can be original sub name + page number?
 
-                            for (PageChoice choice : pageChoices) {
-                                choice.setSourcePageId(pageId);
-                                choice.setStatusMessage("Choice finished parsing");
-                            }
+                        logger.debug("Generating pages for multi page sub " + subName);
 
-                            storyPage.setPageChoices(pageChoices);
-                            break;
+                        List<StoryPage> generatedPages = generatePagesFromMultiPage(subName, rawSubLineData, pageId);
+                        //storyPages.addAll(generatedPages);
+                        //pageId += rawSubLineData.size();
 
-                        case PREGAME_PAGE:
-                        case WIN_PAGE:
-                        case GAMEOVER_PAGE:
-                        case PASS_THROUGH_PAGE:
-                            String destinationSub = null;
+                    } else {
 
-                            if (pageType == PageType.PREGAME_PAGE || pageType == PageType.PASS_THROUGH_PAGE) {
-                                logger.debug("Sub " + subName + " is a pass through or pre game page.");
-                                destinationSub = getDestinationSubOnSpecialPage(rawSubLineData);
-                            } else {
-                                logger.debug("Sub " + subName + " is a win or gameover page page.");
-                                //win or game over screen
-                                destinationSub = TITLE_SCREEN_DEST_NAME;
-                            }
+                        String pageStoryText = getPageStoryText(rawSubLineData);
 
-                            PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
-                            pregameChoice.setSourcePageId(pageId);
+                        StoryPage storyPage = new StoryPage(pageId, subName, pageStoryText);
+                        storyPage.setPageType(pageType);
 
-                            pregameChoice.setStatusMessage("Special page choice finished parsing");
+                        logger.debug("Sub " + subName + " pageType = " + pageType.name());
 
-                            logger.info("Special page choice parsing finished for sub " + subName
-                                    + " destination sub = " + destinationSub);
+                        switch (pageType) {
 
-                            storyPage.addPageChoice(pregameChoice);
-                            break;
+                            case REGULAR_PAGE:
 
-                        default:
-                            logger.error("Failed to find page type for " + subName + " of type " + pageType.name());
+                                List<PageChoice> pageChoices = getChoicesForSub(rawSubLineData);
+
+                                for (PageChoice choice : pageChoices) {
+                                    choice.setSourcePageId(pageId);
+                                    choice.setStatusMessage("Choice finished parsing");
+                                }
+
+                                storyPage.setPageChoices(pageChoices);
+                                break;
+
+                            case PREGAME_PAGE:
+                            case WIN_PAGE:
+                            case GAMEOVER_PAGE:
+                            case PASS_THROUGH_PAGE:
+                                String destinationSub = null;
+
+                                if (pageType == PageType.PREGAME_PAGE || pageType == PageType.PASS_THROUGH_PAGE) {
+                                    destinationSub = getDestinationSubOnSpecialPage(rawSubLineData);
+                                } else {
+                                    //win or game over screen
+                                    destinationSub = TITLE_SCREEN_DEST_NAME;
+                                }
+
+                                PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
+                                pregameChoice.setSourcePageId(pageId);
+
+                                pregameChoice.setStatusMessage("Special page choice finished parsing");
+
+                                logger.info("Special page choice parsing finished for sub " + subName
+                                        + " destination sub = " + destinationSub);
+
+                                storyPage.addPageChoice(pregameChoice);
+                                break;
+
+                            default:
+                                logger.error("Failed to find page type for " + subName + " of type " + pageType.name());
+                                if (failOnErrors) {
+                                    logger.error("Fail on errors is set. Ending run.");
+                                    System.exit(-9);
+                                }
+                        }
+
+                        storyPage.setStatusMessage("Ready for story linking");
+                        storyPages.add(storyPage);
+
+                        pageId++;
+
                     }
-
-                    storyPage.setStatusMessage("Ready for story linking");
-                    storyPages.add(storyPage);
-
-                    pageId++;
-
                 } else {
                     failedStoryPagesSubNames.add(subName);
                     logger.info("generatePages :: SubName : " + subName + " is not a valid story page. Skipping");
@@ -365,6 +386,74 @@ public class WrySourceParser {
         }
 
         return pageStoryText.toString();
+    }
+
+    //TODO : THIS NEEDS TO BE FINISHED BEING FILLED OUT!
+    private List<StoryPage> generatePagesFromMultiPage(String originalSubName, List<String> rawSubLineData,
+                                                       int currentPageId) {
+
+        // TODO : with each generated page from sub data, set page id and increment currentPageId.
+        // TODO : calling method will update it's pageId counter based on generatedPage's size.
+
+        List<StoryPage> generatedPages = new ArrayList<>();
+        Map<String, List<String>> rawPages = new HashMap<>();
+
+        int numPages = 0;
+        boolean isFirstPage = true;
+        boolean isFirstLine = true;
+        String pageName = originalSubName;
+        List<String> tempPageData = new ArrayList<>();
+
+        //TODO : sub e4l1's goto e4l1s is going to be a hoot to parse... it's the first line so other
+        //TODO : internal pages mention it but it's also the first page of the multi-page so the original
+        //TODO : reference needs to go to e4l1 no e4l1s like the internal pages do.... yay....
+
+        for (String line : rawSubLineData) {
+
+            if (!getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS).isExcludedWordInLine(line)) {
+
+                if (isFirstLine && !line.contains(":")) {
+                    isFirstLine = false;
+                    numPages++;
+                }
+
+                if (line.contains(":") && !isFirstLine) {
+                    numPages++;
+
+                    if (isFirstPage) {
+                        isFirstPage = false;
+                        logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
+                        rawPages.put(pageName, tempPageData);
+                    } else {
+                        pageName = line.split(":")[0];
+                        logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
+                        rawPages.put(pageName, tempPageData);
+                    }
+                    tempPageData = new ArrayList<>();
+                }
+
+                tempPageData.add(line);
+            }
+        }
+
+        logger.info("Multi-page sub " + originalSubName + " contains " + numPages + " pages.");
+
+
+        for (String rawPageNames : rawPages.keySet()) {
+            List<String> rawPage = rawPages.get(rawPageNames);
+            String storyText = getPageStoryText(rawPage);
+            StoryPage storyPage = new StoryPage(currentPageId, rawPageNames, storyText);
+            storyPage.setPageType(PageType.REGULAR_PAGE);
+            generatedPages.add(storyPage);
+            currentPageId++;
+        }
+
+        for (StoryPage page : generatedPages) {
+            logger.info("Multi-page " + originalSubName + " generated page " + page.getStoryPageId() + "-"
+                    + page.getOriginalSubName() + " :: " + page.getPageType().name() + " :: " + page.getPageText());
+        }
+
+        return generatedPages;
     }
 
 

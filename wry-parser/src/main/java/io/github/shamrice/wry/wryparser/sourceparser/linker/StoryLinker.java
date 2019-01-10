@@ -114,10 +114,9 @@ public class StoryLinker {
 
                     } catch (IndexOutOfBoundsException ex) {
 
-                        logger.error(ex);
-                        logger.info("currentPage " + currentPage.getOriginalSubName() + " destination is " +
+                        logger.error("currentPage " + currentPage.getOriginalSubName() + " destination is " +
                                 choice.getDestinationSubName() + " with id " + choice.getDestinationPageId() +
-                                " so skipping further story traversal.");
+                                " so skipping further story traversal.", ex);
                         if (failOnError) {
                             logger.error("Fail on error flag is set so ending run.");
                             System.exit(-4);
