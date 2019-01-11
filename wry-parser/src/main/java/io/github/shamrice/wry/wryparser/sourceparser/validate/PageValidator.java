@@ -50,6 +50,10 @@ public class PageValidator {
             return PageType.PASS_THROUGH_PAGE;
         }
 
+        if (isPassThroughPageFromMultiPage(subLineData)) {
+            return PageType.PASS_THROUGH_PAGE;
+        }
+
         return PageType.ERROR;
 
     }
@@ -164,6 +168,20 @@ public class PageValidator {
 
             for (String line : subLineData) {
                 if (line.contains("SLEEP") || line.contains("opra")) {
+                    logger.info("Found pass through page with matching line : " + line);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isPassThroughPageFromMultiPage(List<String> subLineData) {
+        if (!isValidPage(subLineData) && !isWinningScreen(subLineData) && !isGameOverScreen(subLineData)
+                && !isPreGameScreen(subLineData)) {
+
+            for (String line : subLineData) {
+                if (line.contains("GOTO")) {
                     logger.info("Found pass through page with matching line : " + line);
                     return true;
                 }

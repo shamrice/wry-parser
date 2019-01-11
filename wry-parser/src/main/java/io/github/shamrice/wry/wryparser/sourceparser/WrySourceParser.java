@@ -166,16 +166,11 @@ public class WrySourceParser {
                     if (pageType == PageType.MULTI_PAGE) {
 
                         //multi pages require extra parsing to separate individual pages out.
-
-                        //TODO : this will require more thinking as it causes the linker to fail.
-                        //TODO : choice goes to multipage sub name, first generated page must match original sub name
-                        //TODO : following pages can be original sub name + page number?
-
                         logger.debug("Generating pages for multi page sub " + subName);
 
                         List<StoryPage> generatedPages = generatePagesFromMultiPage(subName, rawSubLineData, pageId);
                         storyPages.addAll(generatedPages);
-                        pageId += rawSubLineData.size();
+                        pageId += generatedPages.size();
 
                     } else {
 
@@ -362,12 +357,20 @@ public class WrySourceParser {
 
     private String getDestinationSubOnSpecialPage(List<String> rawSubData) {
 
-        int index = rawSubData.indexOf("END SUB") - 1;
+        int index = rawSubData.size() - 1;
 
         while (index > 0) {
             String possibleDest = rawSubData.get(index);
-            if (!possibleDest.isEmpty()) {
+
+            if (!possibleDest.isEmpty() && !possibleDest.equals("END SUB")) {
                 logger.info("Special page screen destination = " + possibleDest);
+
+                //remove GOTO statement if exists.
+                if (possibleDest.contains("GOTO")) {
+                    possibleDest = possibleDest.replace("GOTO", "");
+                }
+                possibleDest = possibleDest.trim();
+
                 return possibleDest;
             } else {
                 index--;
@@ -409,8 +412,10 @@ public class WrySourceParser {
         rawPages.put(originalSubName, new ArrayList<>());
 
         boolean isFirstLine = true;
+        boolean isFirstPage = true;
         boolean isEndOfPage = false;
         String pageName = originalSubName;
+        String firstPageName = originalSubName;
         List<String> tempPageData = new ArrayList<>();
 
         ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
@@ -418,60 +423,119 @@ public class WrySourceParser {
         //iterate through subs line data and break it into multiple pages
         for (String line : rawSubLineData) {
 
-            if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(line)) {
-
-                if (!isFirstLine && line.contains(":")) {
-                    isEndOfPage = true;
-                }
-
-                if (isEndOfPage) {
-                    logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
-                    rawPages.put(pageName, tempPageData);
-
-                    tempPageData = new ArrayList<>();
-                    isEndOfPage = false;
-                }
-
-                if (line.contains(":")) {
-                    pageName = line.split(":")[0];
-                }
-
-                isFirstLine = false;
-                tempPageData.add(line);
+            if ((!isFirstLine && line.contains(":")) || line.contains("END SUB")) {
+                isEndOfPage = true;
             }
+
+            if (isEndOfPage) {
+
+                if (isFirstPage) {
+                    firstPageName = pageName;
+                }
+
+                logger.info("Adding page " + pageName + " from multi-page " + originalSubName);
+                rawPages.put(pageName, tempPageData);
+
+                tempPageData = new ArrayList<>();
+                isEndOfPage = false;
+                isFirstPage = false;
+            }
+
+            if (line.contains(":")) {
+                pageName = line.split(":")[0];
+            }
+
+            if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(line)) {
+                isFirstLine = false;
+            }
+
+            tempPageData.add(line);
+
         }
 
         logger.info("Multi-page sub " + originalSubName + " contains " + rawPages.size() + " pages.");
 
         //add found pages and generate choice information for each
-        //TODO : need to generate choices for pass through pages!!
         for (String rawPageName : rawPages.keySet()) {
             List<String> rawPage = rawPages.get(rawPageName);
+            List<String> rawPageFiltered = new ArrayList<>();
 
+            //filter out BASIC commands from raw sub data.
             for (String data : rawPage) {
-                logger.debug("Multi-page sub: " + originalSubName + " :: rawPageName: " + rawPageName + " :: data=" + data);
+                logger.debug("Multi-page sub: " + originalSubName + " :: rawPageName: " + rawPageName
+                        + " :: data=" + data);
+
+                if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(data)) {
+                    rawPageFiltered.add(data);
+                }
             }
 
+            PageType pageType = PageValidator.getPageType(rawPage);
+
+            logger.debug("**SEARCH*** rawPageFilteredSize = " + rawPageFiltered.size() + " for " + rawPageName +
+                    " first page name = " + firstPageName);
+
             //TODO : this is a weird work around for a special case of e4l1 should go to e4l1s as a destination...
-            if (rawPage.size() == 0) {
+            if (rawPageFiltered.size() == 0) {
                 StoryPage storyPage = new StoryPage(currentPageId, rawPageName, "Pass through");
                 storyPage.setPageType(PageType.PASS_THROUGH_PAGE);
 
                 List<PageChoice> pageChoices = new ArrayList<>();
-                PageChoice pageChoice = new PageChoice(1, "Continue", "e4l1s");
+                PageChoice pageChoice = new PageChoice(1, "Continue", firstPageName);
                 pageChoices.add(pageChoice);
 
                 storyPage.setPageChoices(pageChoices);
                 generatedPages.add(storyPage);
 
+                logger.info("**SEARCH*** rawPageFilteredSize = " + rawPageFiltered.size() + " for " + rawPageName +
+                         " first page name = " + firstPageName);
+                
             } else {
 
-                String storyText = getPageStoryText(rawPage);
+                String storyText = getPageStoryText(rawPageFiltered);
 
                 StoryPage storyPage = new StoryPage(currentPageId, rawPageName, storyText);
-                storyPage.setPageType(PageType.REGULAR_PAGE);
+                storyPage.setPageType(pageType);
 
-                storyPage.setPageChoices(getChoicesForMultiPageSub(rawPage));
+                switch (pageType) {
+
+                    case REGULAR_PAGE:
+                    case MULTI_PAGE:
+                        storyPage.setPageChoices(getChoicesForMultiPageSub(rawPageFiltered));
+                        break;
+
+                    case PREGAME_PAGE:
+                    case WIN_PAGE:
+                    case GAMEOVER_PAGE:
+                    case PASS_THROUGH_PAGE:
+                        String destinationSub = null;
+
+                        if (pageType == PageType.PREGAME_PAGE || pageType == PageType.PASS_THROUGH_PAGE) {
+                            destinationSub = getDestinationSubOnSpecialPage(rawPageFiltered);
+                        } else {
+                            //win or game over screen
+                            destinationSub = TITLE_SCREEN_DEST_NAME;
+                        }
+
+                        PageChoice pregameChoice = new PageChoice(1, "Next Screen", destinationSub);
+                        pregameChoice.setSourcePageId(currentPageId);
+
+                        pregameChoice.setStatusMessage("Special page choice finished parsing");
+
+                        logger.info("Special page choice parsing finished for sub " + rawPageName
+                                + " destination sub = " + destinationSub);
+
+                        storyPage.addPageChoice(pregameChoice);
+                        break;
+
+                    default:
+                        logger.error("Failed to find page type for " + rawPageName + " of type " + pageType.name());
+                        if (failOnErrors) {
+                            logger.error("Fail on errors is set. Ending run.");
+                            System.exit(-9);
+                        }
+
+                }
 
                 generatedPages.add(storyPage);
             }
@@ -511,7 +575,7 @@ public class WrySourceParser {
                 }
 
                 //get choice destinations from if statements
-                if (currentLine.contains("IF") && currentLine.contains("THEN GOTO")) {
+                if (currentLine.contains("IF") && currentLine.contains("THEN")) {
 
                     logger.debug("Multi-sub choice line: " + currentLine);
                     String condensedLine = currentLine.replace(" ", "");
@@ -522,8 +586,15 @@ public class WrySourceParser {
                                 condensedLine.indexOf("=") + 1,
                                 condensedLine.indexOf("=") + 2)); //TODO : major ew
 
-                        String destinationLabel = condensedLine.substring(
-                                condensedLine.lastIndexOf("GOTO") + 4);
+                        String destinationLabel;
+
+                        if (currentLine.contains("THEN GOTO")) {
+                            destinationLabel = condensedLine.substring(
+                                    condensedLine.lastIndexOf("GOTO") + 4);
+                        } else {
+                            destinationLabel = condensedLine.substring(
+                                    condensedLine.lastIndexOf("THEN") + 4);
+                        }
 
                         logger.debug("Multi-sub choice dest=" + choiceId + " :: dest label=" + destinationLabel);
 
