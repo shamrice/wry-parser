@@ -49,6 +49,12 @@ public class Application implements Callable<Void> {
     boolean isHelpRequested = false;
 
     public static void main(String[] args) {
+
+        logger.info(" ----------------------------------------");
+        logger.info("|  Wry Source Parser Application - 2019  |");
+        logger.info("|  Created by: Erik Eriksen              |");
+        logger.info(" ----------------------------------------");
+
         StringBuilder sb = new StringBuilder("Wry parser started with args: ");
         for (String arg : args) {
             sb.append(arg);
