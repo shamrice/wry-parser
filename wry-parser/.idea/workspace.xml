@@ -27,7 +27,7 @@
               <entry file="file://$PROJECT_DIR$/src/main/resources/WRY.BAS">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="246">
-                    <caret line="2616" column="13" selection-start-line="2616" selection-end-line="2616" selection-end-column="13" />
+                    <caret line="2082" column="12" selection-start-line="2082" selection-end-line="2082" selection-end-column="12" />
                   </state>
                 </provider>
               </entry>
@@ -39,11 +39,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="147" selection-start-line="147" selection-end-line="147" />
+            <state relative-caret-position="300">
+              <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -51,11 +51,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="5889">
-              <caret line="491" column="16" selection-start-line="491" selection-start-column="16" selection-end-line="491" selection-end-column="16" />
+              <caret line="491" selection-start-line="491" selection-end-line="491" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -152,7 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ldemo</find>
       <find>pregame screen dest</find>
       <find>woods1</find>
       <find>SUB game1</find>
@@ -182,6 +181,7 @@
       <find>-1</find>
       <find>IF knobs$ =</find>
       <find>sub e4l1</find>
+      <find>sub Gameover</find>
     </findStrings>
     <replaceStrings>
       <replace>public static final</replace>
@@ -213,8 +213,8 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/story/storypage/PageType.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/linker/StoryLinker.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java" />
       </list>
     </option>
   </component>
@@ -365,7 +365,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547225005850" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547243047114" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/out/artifacts/wryparser_jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -609,6 +609,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5889">
+          <caret line="491" selection-start-line="491" selection-end-line="491" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/constants/ParseConstants.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -616,27 +626,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="147" selection-start-line="147" selection-end-line="147" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/WRY.BAS">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="246">
-          <caret line="2616" column="13" selection-start-line="2616" selection-end-line="2616" selection-end-column="13" />
+          <caret line="2082" column="12" selection-start-line="2082" selection-end-line="2082" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/WrySourceParser.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/sourceparser/validate/PageValidator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5889">
-          <caret line="491" column="16" selection-start-line="491" selection-start-column="16" selection-end-line="491" selection-end-column="16" />
+        <state relative-caret-position="300">
+          <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

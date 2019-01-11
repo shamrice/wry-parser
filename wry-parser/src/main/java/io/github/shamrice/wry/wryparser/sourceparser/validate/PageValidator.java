@@ -11,10 +11,6 @@ public class PageValidator {
 
     private static final Logger logger = Logger.getLogger(PageValidator.class);
 
-    //TODO : Late pages in Wry Humor and all of Bewildered are getting parsed incorrectly as Game Over pages
-    //TODO : because they do not follow the regular sub conventions of the rest of the game. Need to add
-    //TODO : checks and parsing for that!!!
-
     // TODO : This should probably be either a constant or a config value.
     public static boolean isPreGameScreen(String subName) {
         return (subName.contains("pregame") || subName.equals("ldemo"));
@@ -129,7 +125,7 @@ public class PageValidator {
 
     private static boolean isGameOverScreen(List<String> subLineData) {
         for (String line : subLineData) {
-            if (line.contains(GAME_OVER_SUB_NAME)) {
+            if (line.contains("SUB Gameover")) {
                 logger.info("isGameOverScreen :: is gameover screen");
                 return true;
             }
