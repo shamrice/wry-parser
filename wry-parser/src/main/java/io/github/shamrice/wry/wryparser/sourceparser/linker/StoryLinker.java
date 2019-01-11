@@ -20,7 +20,6 @@ public class StoryLinker {
         this.failOnError = failOnError;
     }
 
-
     public void linkDestinationPageIdsToChoices(List<StoryPage> storyPages) {
 
         logger.info("Linking choice destination page ids to choices.");

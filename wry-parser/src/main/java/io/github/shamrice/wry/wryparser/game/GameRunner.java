@@ -16,21 +16,17 @@ public class GameRunner {
 
     private static final Logger logger = Logger.getLogger(GameRunner.class);
 
+    private List<String> titleScreenData;
     private List<Story> storyList;
 
-    public GameRunner(List<Story> storyList) {
+    public GameRunner(List<String> titleScreenData, List<Story> storyList) {
+        this.titleScreenData = titleScreenData;
         this.storyList = storyList;
     }
 
-    public void displayTitleScreen(List<String> titleScreenData) {
-        for (String line : titleScreenData) {
-            line = line.replace("PRINT", "");
-            line = line.replace("\"", "");
-            System.out.println(line);
-        }
-    }
-
     public void run() {
+
+        displayTitleScreen();
 
         System.out.println("\n\nSelect a story:");
         for (Story story : storyList) {
@@ -54,6 +50,14 @@ public class GameRunner {
             }
         }
 
+    }
+
+    private void displayTitleScreen() {
+        for (String line : titleScreenData) {
+            line = line.replace("PRINT", "");
+            line = line.replace("\"", "");
+            System.out.println(line);
+        }
     }
 
     private void playStory(Story story) {

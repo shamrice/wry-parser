@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
-import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.GAME_OVER_SUB_NAME;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 
 public class PageValidator {
 
@@ -68,11 +68,11 @@ public class PageValidator {
         boolean hasIfs = false;
 
         for (String data : subLineData) {
-            if (data.contains("PRINT")) {
+            if (data.contains(PRINT_COMMAND)) {
                 hasStoryText = true;
             }
 
-            if (data.contains("INPUT")) {
+            if (data.contains(INPUT_COMMAND)) {
                 hasInput = true;
             }
 
@@ -80,11 +80,11 @@ public class PageValidator {
                 hasChoicesText = true;
             }
 
-            if (data.contains("GOTO")) {
+            if (data.contains(GOTO_COMMAND)) {
                 hasGotos = true;
             }
 
-            if (data.contains("IF") && data.contains("THEN")) {
+            if (data.contains(IF_COMMAND) && data.contains(THEN_COMMAND)) {
                 hasIfs = true;
             }
         }
@@ -101,11 +101,11 @@ public class PageValidator {
         boolean hasChoices = false;
 
         for (String data : subLineData) {
-            if (data.contains("PRINT")) {
+            if (data.contains(PRINT_COMMAND)) {
                 hasStoryText = true;
             }
 
-            if (data.contains("INPUT")) {
+            if (data.contains(INPUT_COMMAND)) {
                 hasInput = true;
             }
 
@@ -113,7 +113,7 @@ public class PageValidator {
                 hasChoicesText = true;
             }
 
-            if (data.contains("SELECT CASE")) {
+            if (data.contains(SELECT_COMMAND + " " + CASE_COMMAND)) {
                 hasChoices = true;
             }
         }
@@ -125,7 +125,7 @@ public class PageValidator {
 
     private static boolean isGameOverScreen(List<String> subLineData) {
         for (String line : subLineData) {
-            if (line.contains("SUB Gameover")) {
+            if (line.contains(SUB_COMMAND + " " + GAME_OVER_SUB_NAME)) {
                 logger.info("isGameOverScreen :: is gameover screen");
                 return true;
             }
@@ -148,7 +148,7 @@ public class PageValidator {
     // TODO : these should be a constant strings or config strings
     private static boolean isPreGameScreen(List<String> subLineData) {
         for (String line : subLineData) {
-            if (line.contains("SUB pregame") || line.contains("SUB ldemo")) {
+            if (line.contains(SUB_COMMAND + " pregame") || line.contains(SUB_COMMAND + " ldemo")) {
                 logger.info("isPreGameScreen :: is pregame screen");
                 return true;
             }
@@ -163,7 +163,7 @@ public class PageValidator {
             && !isPreGameScreen(subLineData)) {
 
             for (String line : subLineData) {
-                if (line.contains("SLEEP") || line.contains("opra")) {
+                if (line.contains(SLEEP_COMMAND) || line.contains("opra")) {
                     logger.info("Found pass through page with matching line : " + line);
                     return true;
                 }
@@ -177,7 +177,7 @@ public class PageValidator {
                 && !isPreGameScreen(subLineData)) {
 
             for (String line : subLineData) {
-                if (line.contains("GOTO")) {
+                if (line.contains(GOTO_COMMAND)) {
                     logger.info("Found pass through page with matching line : " + line);
                     return true;
                 }

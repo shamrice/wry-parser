@@ -75,8 +75,12 @@ public class Application implements Callable<Void> {
             List<Story> parsedStories = wrySourceParser.run();
 
             if (parsedStories != null && runGame) {
-                GameRunner gameRunner = new GameRunner(parsedStories);
-                gameRunner.displayTitleScreen(wrySourceParser.getSubDisplayData(TITLE_SCREEN_SUB_NAME));
+
+                GameRunner gameRunner = new GameRunner(
+                        wrySourceParser.getSubDisplayData(TITLE_SCREEN_SUB_NAME),
+                        parsedStories
+                );
+
                 gameRunner.run();
             }
 

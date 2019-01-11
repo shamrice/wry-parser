@@ -89,8 +89,8 @@ public class WrySourceParser {
 
             while ((currentLine = bufferedReader.readLine()) != null) {
 
-                if (currentLine.contains("SUB") && !currentLine.equals("END SUB") && !currentLine.contains("GOSUB")
-                    && !currentLine.contains("()")) {
+                if (currentLine.contains(SUB_COMMAND) && !currentLine.equals(END_SUB_COMMAND)
+                        && !currentLine.contains(GOSUB_COMMAND) && !currentLine.contains("()")) {
 
                     isSub = true;
                     subName = currentLine.split("\\ ")[1];
@@ -101,7 +101,7 @@ public class WrySourceParser {
                     rawLineData.add(currentLine);
                 }
 
-                if (currentLine.equals("END SUB")) {
+                if (currentLine.equals(END_SUB_COMMAND)) {
                     logger.debug("Finished getting raw sub data - END SUB found for sub " + subName);
                     isSub = false;
                     rawSubData.put(subName, rawLineData);
@@ -240,18 +240,7 @@ public class WrySourceParser {
             }
         }
 
-
         for (StoryPage storyPage : storyPages) {
-            /* TODO : not sure how i feel about that idea below...
-            for (PageChoice choice : storyPage.getPageChoices()) {
-                for (StoryPage page : storyPages) {
-                    if (choice.getDestinationSubName().equals(page.getOriginalSubName())
-                            && page.getPageType() == PageType.MULTI_PAGE) {
-                        //TODO : set the destination sub of the choice to the actual first page?
-                    }
-                }
-            }
-            */
             storyPage.logStoryPageDetails("WrySourceParser::generatePages");
         }
 
@@ -326,13 +315,13 @@ public class WrySourceParser {
                 }
 
                 //get destination sub for each switch choice
-                if (currentLine.contains("CASE") && !currentLine.contains("SELECT")
-                        && !currentLine.contains("ELSE")) {
+                if (currentLine.contains(CASE_COMMAND) && !currentLine.contains(SELECT_COMMAND)
+                        && !currentLine.contains(ELSE_COMMAND)) {
                     isNextLineChoiceDestination = true;
                     choiceId = Integer.parseInt(currentLine.split("\\ ")[1]); //TODO : ewww...
                 }
 
-                if (isNextLineChoiceDestination && !currentLine.contains("CASE")) {
+                if (isNextLineChoiceDestination && !currentLine.contains(CASE_COMMAND)) {
 
                     logger.debug("getChoiceDestinationsForSub :: Potential destination SUB = " + currentLine
                             + " choice = " + choiceId);
@@ -362,12 +351,12 @@ public class WrySourceParser {
         while (index > 0) {
             String possibleDest = rawSubData.get(index);
 
-            if (!possibleDest.isEmpty() && !possibleDest.equals("END SUB")) {
+            if (!possibleDest.isEmpty() && !possibleDest.equals(END_SUB_COMMAND)) {
                 logger.info("Special page screen destination = " + possibleDest);
 
                 //remove GOTO statement if exists.
-                if (possibleDest.contains("GOTO")) {
-                    possibleDest = possibleDest.replace("GOTO", "");
+                if (possibleDest.contains(GOTO_COMMAND)) {
+                    possibleDest = possibleDest.replace(GOTO_COMMAND, "");
                 }
                 possibleDest = possibleDest.trim();
 
@@ -423,7 +412,7 @@ public class WrySourceParser {
         //iterate through subs line data and break it into multiple pages
         for (String line : rawSubLineData) {
 
-            if ((!isFirstLine && line.contains(":")) || line.contains("END SUB")) {
+            if ((!isFirstLine && line.contains(":")) || line.contains(END_SUB_COMMAND)) {
                 isEndOfPage = true;
             }
 
@@ -575,7 +564,7 @@ public class WrySourceParser {
                 }
 
                 //get choice destinations from if statements
-                if (currentLine.contains("IF") && currentLine.contains("THEN")) {
+                if (currentLine.contains(IF_COMMAND) && currentLine.contains(THEN_COMMAND)) {
 
                     logger.debug("Multi-sub choice line: " + currentLine);
                     String condensedLine = currentLine.replace(" ", "");
@@ -588,12 +577,12 @@ public class WrySourceParser {
 
                         String destinationLabel;
 
-                        if (currentLine.contains("THEN GOTO")) {
+                        if (currentLine.contains(THEN_COMMAND + " " + GOTO_COMMAND)) {
                             destinationLabel = condensedLine.substring(
-                                    condensedLine.lastIndexOf("GOTO") + 4);
+                                    condensedLine.lastIndexOf(GOTO_COMMAND) + 4);
                         } else {
                             destinationLabel = condensedLine.substring(
-                                    condensedLine.lastIndexOf("THEN") + 4);
+                                    condensedLine.lastIndexOf(THEN_COMMAND) + 4);
                         }
 
                         logger.debug("Multi-sub choice dest=" + choiceId + " :: dest label=" + destinationLabel);
