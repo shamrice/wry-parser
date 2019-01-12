@@ -1,19 +1,21 @@
 package io.github.shamrice.wry.wryparser.configuration;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
-import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterImpl;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.List;
 
 public class Configuration {
 
+    private static final Logger logger = Logger.getLogger(Configuration.class);
+
     private File wrySourceFile;
     private List<ExcludeFilter> excludeFilterList;
-    private int traversalLinkLimit;
-    private boolean forceContinueOnErrors;
-    private boolean runGame;
+    private int traversalLinkLimit = 10;
+    private boolean forceContinueOnErrors = false;
+    private boolean runGame = false;
 
     private static Configuration instance = null;
 
@@ -33,6 +35,10 @@ public class Configuration {
         this.traversalLinkLimit = traversalLinkLimit;
         this.forceContinueOnErrors = forceContinueOnErrors;
         this.runGame = runGame;
+
+        logger.info("Set configuration values: wrySourceFile: " + wrySourceFile.getName() + " :: exclude filter list size: "
+                + excludeFilterList.size() + " :: traversalLinkLimit = " + traversalLinkLimit + " :: forContinueOnErrors: "
+                + forceContinueOnErrors + " :: runGame: " + runGame);
     }
 
     public File getWrySourceFile() {

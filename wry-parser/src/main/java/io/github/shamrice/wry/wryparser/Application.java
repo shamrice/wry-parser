@@ -46,7 +46,7 @@ public class Application implements Callable<Void> {
             description = "Force parsing to continue even if there are failures encountered.")
     private boolean forceContinueOnErrors = false;
 
-    @CommandLine.Option(names = { "-l", "--traversal-limit"},
+    @CommandLine.Option(names = { "-t", "--traversal-limit"},
             description = "Max traversal limit linker can pass through a story page.")
     private int traversalLimit = 10;
 
