@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.BUILD_PAGES_FAILED;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.GET_DESTINATION_SUB_ON_SPECIAL_PAGE_FAILED;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
@@ -129,7 +131,7 @@ public class PageBuilderImpl implements PageBuilder {
 
         if (!Configuration.getInstance().isForceContinueOnErrors() && failedStoryPagesSubNames.size() > 0) {
             logger.error("Flag set to fail on errors. Run stopping.");
-            System.exit(-1);
+            System.exit(BUILD_PAGES_FAILED);
         }
 
         return storyPages;
@@ -176,8 +178,8 @@ public class PageBuilderImpl implements PageBuilder {
                 isFirstPage = false;
             }
 
-            if (line.contains(":")) {
-                pageName = line.split(":")[0];
+            if (line.contains(LABEL_TERMINATOR)) {
+                pageName = line.split(LABEL_TERMINATOR)[0];
             }
 
             if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(line)) {
@@ -329,7 +331,7 @@ public class PageBuilderImpl implements PageBuilder {
         logger.error("Unable to find destination sub on special screen. Returning null.");
         if (!Configuration.getInstance().isForceContinueOnErrors()) {
             logger.error("Fail on error flag is set. Ending run.");
-            System.exit(-2);
+            System.exit(GET_DESTINATION_SUB_ON_SPECIAL_PAGE_FAILED);
         }
         return null;
     }

@@ -1,6 +1,7 @@
 package io.github.shamrice.wry.wryparser.sourceparser.constants;
 
 public class QBasicCommandConstants {
+    public static final String LABEL_TERMINATOR = ":";
     public static final String PRINT_COMMAND = "PRINT";
     public static final String SLEEP_COMMAND = "SLEEP";
     public static final String INPUT_COMMAND = "INPUT";

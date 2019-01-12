@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.*;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 
 public class StoryLinkerImpl implements StoryLinker {
@@ -115,7 +116,7 @@ public class StoryLinkerImpl implements StoryLinker {
                                 " so skipping further story traversal.", ex);
                         if (!Configuration.getInstance().isForceContinueOnErrors()) {
                             logger.error("Fail on error flag is set so ending run.");
-                            System.exit(-4);
+                            System.exit(TRAVERSE_STORY_INDEX_OUT_OF_BOUNDS);
                         }
                     }
 
@@ -130,7 +131,7 @@ public class StoryLinkerImpl implements StoryLinker {
                             + nextPageId);
                     if (!Configuration.getInstance().isForceContinueOnErrors()) {
                         logger.error("Fail on error flag is set so ending run.");
-                        System.exit(-6);
+                        System.exit(TRAVERSE_STORY_PAGE_NOT_FOUND);
                     }
                 }
             } else {
@@ -159,7 +160,7 @@ public class StoryLinkerImpl implements StoryLinker {
 
         if (!Configuration.getInstance().isForceContinueOnErrors() && isFailure) {
             logger.error("Linking choices failed and fail on error flag is set. Ending run.");
-            System.exit(-3);
+            System.exit(LOG_FAILED_CHOICE_LINKS);
         }
     }
 

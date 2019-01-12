@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.GET_CHOICES_MULTIPAGE_INDEX_OUT_OF_BOUNDS;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.GET_CHOICES_MULTIPAGE_PAGE_ADD_FAILURE;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
@@ -129,7 +131,7 @@ public class ChoiceParser {
                     } catch (Exception ex) {
                         logger.error("Multi-sub failed: ", ex);
                         if (!Configuration.getInstance().isForceContinueOnErrors()) {
-                            System.exit(-9);
+                            System.exit(GET_CHOICES_MULTIPAGE_INDEX_OUT_OF_BOUNDS);
                         }
                     }
                 }
@@ -149,7 +151,7 @@ public class ChoiceParser {
         } catch (Exception ex) {
             logger.error("Failed to add multi-sub choices", ex);
             if (!Configuration.getInstance().isForceContinueOnErrors()) {
-                System.exit(-1);
+                System.exit(GET_CHOICES_MULTIPAGE_PAGE_ADD_FAILURE);
             }
         }
 

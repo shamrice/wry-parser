@@ -14,7 +14,7 @@ public class PageValidator {
 
     // TODO : This should probably be either a constant or a config value.
     public static boolean isPreGameScreen(String subName) {
-        return (subName.contains("pregame") || subName.equals("ldemo"));
+        return (subName.contains(PREGAME_SUB_NAME_PREFIX) || subName.equals(PREGAME_EPISODE_4_SUB_NAME));
     }
 
     public static PageType getPageType(List<String> subLineData) {
@@ -77,7 +77,7 @@ public class PageValidator {
                 hasInput = true;
             }
 
-            if (data.contains("1)")) {
+            if (data.contains(FIRST_CHOICE_PATTERN)) {
                 hasChoicesText = true;
             }
 
@@ -149,7 +149,9 @@ public class PageValidator {
     // TODO : these should be a constant strings or config strings
     private static boolean isPreGameScreen(List<String> subLineData) {
         for (String line : subLineData) {
-            if (line.contains(SUB_COMMAND + " pregame") || line.contains(SUB_COMMAND + " ldemo")) {
+            if (line.contains(SUB_COMMAND + " " + PREGAME_SUB_NAME_PREFIX)
+                    || line.contains(SUB_COMMAND + " " + PREGAME_EPISODE_4_SUB_NAME)) {
+
                 logger.info("isPreGameScreen :: is pregame screen");
                 return true;
             }
@@ -164,7 +166,8 @@ public class PageValidator {
             && !isPreGameScreen(subLineData)) {
 
             for (String line : subLineData) {
-                if (line.contains(SLEEP_COMMAND) || line.contains("opra")) {
+                //TODO : not sure how I feel about opra sub being labeled explicitly even though it's an edge condition.
+                if (line.contains(SLEEP_COMMAND) || line.contains(OPRA_SUB_NAME)) {
                     logger.info("Found pass through page with matching line : " + line);
                     return true;
                 }

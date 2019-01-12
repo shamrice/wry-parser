@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.LINK_STORIES_FAILED;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
@@ -134,7 +135,7 @@ public class WrySourceParser {
             if (PageValidator.isPreGameScreen(storyChoice.getDestinationSubName())) {
 
                 String storyChoiceText = storyChoice.getChoiceText();
-                storyChoiceText = storyChoiceText.replace("-UNLOCKED-", "");
+                storyChoiceText = storyChoiceText.replace(EPISODE_4_UNLOCKED_TEXT, "");
 
                 Story story = new Story(storyChoice.getChoiceId(), storyChoiceText);
                 story.setFirstPageSubName(storyChoice.getDestinationSubName());
@@ -164,7 +165,7 @@ public class WrySourceParser {
                 logger.info("Successfully parsed story " + story.getStoryId() + "-" + story.getStoryName());
             } else if (!story.isParseSuccessful() && !Configuration.getInstance().isForceContinueOnErrors()) {
                 logger.info("Failed parsed story " + story.getStoryId() + "-" + story.getStoryName());
-                System.exit(-1);
+                System.exit(LINK_STORIES_FAILED);
             }
         }
     }
