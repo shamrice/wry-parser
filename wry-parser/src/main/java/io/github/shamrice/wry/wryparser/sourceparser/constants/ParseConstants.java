@@ -21,7 +21,4 @@ public class ParseConstants {
     public static final String GOSUB_COMMAND = "GOSUB";
     public static final int TITLE_SCREEN_PAGE_ID = 999;
     public static final int PAGE_NOT_FOUND_ID = -1;
-    public static final int MAX_TRAVERSAL_COUNT = 50;
-
-
 }

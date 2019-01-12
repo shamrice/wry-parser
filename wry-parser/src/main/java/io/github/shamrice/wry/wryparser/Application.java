@@ -1,5 +1,6 @@
 package io.github.shamrice.wry.wryparser;
 
+import io.github.shamrice.wry.wryparser.configuration.Configuration;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterBuilder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
@@ -43,7 +44,11 @@ public class Application implements Callable<Void> {
 
     @CommandLine.Option(names = { "-f", "--force"},
             description = "Force parsing to continue even if there are failures encountered.")
-    boolean forceContinueOnErrors = false;
+    private boolean forceContinueOnErrors = false;
+
+    @CommandLine.Option(names = { "-l", "--traversal-limit"},
+            description = "Max traversal limit linker can pass through a story page.")
+    private int traversalLimit = 10;
 
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Displays help.")
     boolean isHelpRequested = false;
@@ -75,8 +80,10 @@ public class Application implements Callable<Void> {
             excludeFilters.add(ExcludeFilterBuilder.build(ExcludeFilterType.BASIC_COMMANDS, excludeCommandFile));
             excludeFilters.add(ExcludeFilterBuilder.build(ExcludeFilterType.STORY_PAGE_SUB_NAMES, excludeSubNamesFile));
 
+            Configuration.getInstance().setValues(wrySourceFile, excludeFilters, traversalLimit, forceContinueOnErrors, runGame);
+
             logger.info("Creating WrySourceParser.");
-            WrySourceParser wrySourceParser = new WrySourceParser(excludeFilters, wrySourceFile, forceContinueOnErrors);
+            WrySourceParser wrySourceParser = new WrySourceParser();
 
             List<Story> parsedStories = wrySourceParser.run();
 

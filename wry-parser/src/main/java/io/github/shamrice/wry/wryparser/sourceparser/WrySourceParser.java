@@ -1,5 +1,6 @@
 package io.github.shamrice.wry.wryparser.sourceparser;
 
+import io.github.shamrice.wry.wryparser.configuration.Configuration;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.filter.trim.LineTrimmer;
@@ -15,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
@@ -23,24 +26,8 @@ public class WrySourceParser {
 
     private static final Logger logger = Logger.getLogger(WrySourceParser.class);
 
-    private File wrySourceFile;
-    private List<ExcludeFilter> excludeFilters;
-    private boolean failOnErrors = false;
-
     private List<Story> storyData = new ArrayList<>();
     private Map<String, List<String>> rawSubData = new HashMap<>();
-    private List<String> failedStoryPagesSubNames = new ArrayList<>();
-
-
-    public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile) {
-        this.wrySourceFile = wrySourceFile;
-        this.excludeFilters = excludeFilters;
-    }
-
-    public WrySourceParser(List<ExcludeFilter> excludeFilters, File wrySourceFile, boolean forceContinueOnErrors) {
-        this(excludeFilters, wrySourceFile);
-        this.failOnErrors = !forceContinueOnErrors;
-    }
 
     public List<String> getSubDisplayData(String subName) {
 
@@ -59,6 +46,9 @@ public class WrySourceParser {
     }
 
     public List<Story> run() throws IOException {
+
+        Instant startInstant = Instant.now();
+
         logger.info("Populating Raw Subroutine Data.");
         populateRawSubData();
 
@@ -74,10 +64,18 @@ public class WrySourceParser {
         logger.info("Linking pages into stories.");
         linkStories(unlinkedStoryPages);
 
+        Instant endInstant = Instant.now();
+
+        long duration = Duration.between(startInstant, endInstant).toMillis();
+        logger.info("***** Total run duration: " + duration + "ms. *****");
+
         return storyData;
     }
 
     private void populateRawSubData() throws IOException {
+
+        File wrySourceFile = Configuration.getInstance().getWrySourceFile();
+
         if (wrySourceFile.canRead()) {
 
             BufferedReader bufferedReader = new BufferedReader(new FileReader(wrySourceFile));
@@ -151,10 +149,11 @@ public class WrySourceParser {
 
         int pageId = 0;
         List<StoryPage> storyPages = new ArrayList<>();
+        List<String> failedStoryPagesSubNames = new ArrayList<>();
 
         for (String subName : rawSubData.keySet()) {
 
-            ExcludeFilter subNameExcludeFilter = getExcludeFilter(ExcludeFilterType.STORY_PAGE_SUB_NAMES);
+            ExcludeFilter subNameExcludeFilter = Configuration.getInstance().getExcludeFilter(ExcludeFilterType.STORY_PAGE_SUB_NAMES);
 
             if (subNameExcludeFilter != null && !subNameExcludeFilter.isInExcluded(subName)) {
 
@@ -221,7 +220,7 @@ public class WrySourceParser {
 
                             default:
                                 logger.error("Failed to find page type for " + subName + " of type " + pageType.name());
-                                if (failOnErrors) {
+                                if (!Configuration.getInstance().isForceContinueOnErrors()) {
                                     logger.error("Fail on errors is set. Ending run.");
                                     System.exit(-9);
                                 }
@@ -247,7 +246,7 @@ public class WrySourceParser {
         failedStoryPagesSubNames.forEach( name -> logger.error("Failed to parse story page with sub name : " + name));
         logger.error("Total failed parsed subs: " + failedStoryPagesSubNames.size());
 
-        if (failOnErrors && failedStoryPagesSubNames.size() > 0) {
+        if (!Configuration.getInstance().isForceContinueOnErrors() && failedStoryPagesSubNames.size() > 0) {
             logger.error("Flag set to fail on errors. Run stopping.");
             System.exit(-1);
         }
@@ -257,34 +256,25 @@ public class WrySourceParser {
     }
 
     private void linkDestinationPagesToChices(List<StoryPage> unlinkedStories) {
-        StoryLinker linker = new StoryLinker(failOnErrors);
+        StoryLinker linker = new StoryLinker();
         linker.linkDestinationPageIdsToChoices(unlinkedStories);
     }
 
     private void linkStories(List<StoryPage> unlinkedStoryPages) {
 
-        StoryLinker linker = new StoryLinker(failOnErrors);
+        StoryLinker linker = new StoryLinker();
 
         for (Story story : storyData) {
             linker.link(story, unlinkedStoryPages);
 
             if (story.isParseSuccessful()) {
                 logger.info("Successfully parsed story " + story.getStoryId() + "-" + story.getStoryName());
-            } else if (!story.isParseSuccessful() && failOnErrors) {
+            } else if (!story.isParseSuccessful() && !Configuration.getInstance().isForceContinueOnErrors()) {
                 logger.info("Failed parsed story " + story.getStoryId() + "-" + story.getStoryName());
                 System.exit(-1);
             }
         }
 
-    }
-
-    private ExcludeFilter getExcludeFilter(ExcludeFilterType excludeFilterType) {
-        for (ExcludeFilter filter : excludeFilters) {
-            if (filter.getExcludeFilterType() == excludeFilterType) {
-                return filter;
-            }
-        }
-        return null;
     }
 
     private List<PageChoice> getChoicesForSub(List<String> rawSubLineData) {
@@ -296,7 +286,7 @@ public class WrySourceParser {
 
         for (String currentLine : rawSubLineData) {
 
-            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+            ExcludeFilter cmdExcludeFilter = Configuration.getInstance().getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
 
             if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(currentLine)) {
                 currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
@@ -367,7 +357,7 @@ public class WrySourceParser {
         }
 
         logger.error("Unable to find destination sub on special screen. Returning null.");
-        if (failOnErrors) {
+        if (!Configuration.getInstance().isForceContinueOnErrors()) {
             logger.error("Fail on error flag is set. Ending run.");
             System.exit(-2);
         }
@@ -407,7 +397,7 @@ public class WrySourceParser {
         String firstPageName = originalSubName;
         List<String> tempPageData = new ArrayList<>();
 
-        ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+        ExcludeFilter cmdExcludeFilter = Configuration.getInstance().getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
 
         //iterate through subs line data and break it into multiple pages
         for (String line : rawSubLineData) {
@@ -519,7 +509,7 @@ public class WrySourceParser {
 
                     default:
                         logger.error("Failed to find page type for " + rawPageName + " of type " + pageType.name());
-                        if (failOnErrors) {
+                        if (!Configuration.getInstance().isForceContinueOnErrors()) {
                             logger.error("Fail on errors is set. Ending run.");
                             System.exit(-9);
                         }
@@ -545,7 +535,7 @@ public class WrySourceParser {
 
         for (String currentLine : rawSubLineData) {
 
-            ExcludeFilter cmdExcludeFilter = getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
+            ExcludeFilter cmdExcludeFilter = Configuration.getInstance().getExcludeFilter(ExcludeFilterType.BASIC_COMMANDS);
 
             if (cmdExcludeFilter != null && !cmdExcludeFilter.isExcludedWordInLine(currentLine)) {
                 currentLine = LineTrimmer.trimPrintCommandsAndSpaces(currentLine);
@@ -590,7 +580,7 @@ public class WrySourceParser {
                         choiceDestinations.put(choiceId, destinationLabel);
                     } catch (Exception ex) {
                         logger.error("Multi-sub failed: ", ex);
-                        if (failOnErrors) {
+                        if (!Configuration.getInstance().isForceContinueOnErrors()) {
                             System.exit(-9);
                         }
                     }
@@ -610,7 +600,7 @@ public class WrySourceParser {
             }
         } catch (Exception ex) {
             logger.error("Failed to add multi-sub choices", ex);
-            if (failOnErrors) {
+            if (!Configuration.getInstance().isForceContinueOnErrors()) {
                 System.exit(-1);
             }
         }

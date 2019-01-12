@@ -1,5 +1,6 @@
 package io.github.shamrice.wry.wryparser.sourceparser.linker;
 
+import io.github.shamrice.wry.wryparser.configuration.Configuration;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
@@ -13,12 +14,6 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 public class StoryLinker {
 
     private static final Logger logger = Logger.getLogger(StoryLinker.class);
-
-    private boolean failOnError;
-
-    public StoryLinker(boolean failOnError) {
-        this.failOnError = failOnError;
-    }
 
     public void linkDestinationPageIdsToChoices(List<StoryPage> storyPages) {
 
@@ -100,7 +95,7 @@ public class StoryLinker {
             choice.incrementTraversalCount();
             choice.setParsed(true);
 
-            if (choice.getTraversalCount() < MAX_TRAVERSAL_COUNT) {
+            if (choice.getTraversalCount() < Configuration.getInstance().getTraversalLinkLimit()) {
 
                 int nextPageId = choice.getDestinationPageId();
 
@@ -116,7 +111,7 @@ public class StoryLinker {
                         logger.error("currentPage " + currentPage.getOriginalSubName() + " destination is " +
                                 choice.getDestinationSubName() + " with id " + choice.getDestinationPageId() +
                                 " so skipping further story traversal.", ex);
-                        if (failOnError) {
+                        if (!Configuration.getInstance().isForceContinueOnErrors()) {
                             logger.error("Fail on error flag is set so ending run.");
                             System.exit(-4);
                         }
@@ -131,7 +126,7 @@ public class StoryLinker {
                     logger.error("Destination for choice " + choice.getChoiceId() + "-" + choice.getChoiceText()
                             + ". Dest sub=" + choice.getDestinationSubName() + " failed to parse because destination pageId = "
                             + nextPageId);
-                    if (failOnError) {
+                    if (!Configuration.getInstance().isForceContinueOnErrors()) {
                         logger.error("Fail on error flag is set so ending run.");
                         System.exit(-6);
                     }
@@ -160,7 +155,7 @@ public class StoryLinker {
             }
         }
 
-        if (failOnError && isFailure) {
+        if (!Configuration.getInstance().isForceContinueOnErrors() && isFailure) {
             logger.error("Linking choices failed and fail on error flag is set. Ending run.");
             System.exit(-3);
         }

@@ -103,6 +103,7 @@ public class GameRunner {
 
                 //get destination page id
                 destinationPageId = PAGE_NOT_FOUND_ID;
+
                 for (PageChoice choice : currentPage.getPageChoices()) {
                     logger.debug("Potential choice destinations= choice id = " + choice.getChoiceId() +
                             " dest info :: pageId=" + choice.getDestinationPageId() + " subName=" +
