@@ -1,6 +1,6 @@
 package io.github.shamrice.wry.wryparser.filter.trim;
 
-import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.PRINT_COMMAND;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.PRINT_COMMAND;
 
 public class LineTrimmer {
 

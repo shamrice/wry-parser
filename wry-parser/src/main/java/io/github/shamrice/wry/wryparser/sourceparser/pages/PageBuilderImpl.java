@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
-import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.CHOICE_REGEX_PATTERN;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
 public class PageBuilderImpl implements PageBuilder {
 

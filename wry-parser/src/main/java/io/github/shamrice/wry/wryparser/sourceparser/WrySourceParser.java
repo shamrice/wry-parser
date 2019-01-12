@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
 public class WrySourceParser {
 

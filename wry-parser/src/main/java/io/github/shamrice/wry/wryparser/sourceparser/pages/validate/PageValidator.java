@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
+import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
 public class PageValidator {
 

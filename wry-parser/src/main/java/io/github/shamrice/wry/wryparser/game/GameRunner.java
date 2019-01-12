@@ -86,7 +86,7 @@ public class GameRunner {
             int destinationPageId;
 
             do {
-                System.out.println(currentPage.getStoryPageId() + "-" + currentPage.getOriginalSubName());
+                System.out.println("\n\n" + currentPage.getStoryPageId() + "-" + currentPage.getOriginalSubName());
                 System.out.println(currentPage.getPageText());
                 System.out.println("\n");
                 for (PageChoice choice : currentPage.getPageChoices()) {
