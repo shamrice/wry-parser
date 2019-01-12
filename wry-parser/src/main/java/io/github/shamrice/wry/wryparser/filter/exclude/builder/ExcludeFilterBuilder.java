@@ -1,5 +1,8 @@
-package io.github.shamrice.wry.wryparser.filter.exclude;
+package io.github.shamrice.wry.wryparser.filter.exclude.builder;
 
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterImpl;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -32,7 +35,7 @@ public class ExcludeFilterBuilder {
         for (String word : excludedWords) {
             logger.info(word);
         }
-        return new ExcludeFilter(excludeFilterType, excludedWords);
+        return new ExcludeFilterImpl(excludeFilterType, excludedWords);
 
     }
 }

@@ -1,6 +1,7 @@
 package io.github.shamrice.wry.wryparser.configuration;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
+import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterImpl;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class Configuration {
     }
 
     public void setValues(File wrySourceFile, List<ExcludeFilter> excludeFilterList, int traversalLinkLimit,
-                         boolean forceContinueOnErrors, boolean runGame) {
+                          boolean forceContinueOnErrors, boolean runGame) {
         this.wrySourceFile = wrySourceFile;
         this.excludeFilterList = excludeFilterList;
         this.traversalLinkLimit = traversalLinkLimit;

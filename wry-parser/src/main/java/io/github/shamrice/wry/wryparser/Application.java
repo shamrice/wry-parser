@@ -2,7 +2,7 @@ package io.github.shamrice.wry.wryparser;
 
 import io.github.shamrice.wry.wryparser.configuration.Configuration;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
-import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterBuilder;
+import io.github.shamrice.wry.wryparser.filter.exclude.builder.ExcludeFilterBuilder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.game.GameRunner;
 import io.github.shamrice.wry.wryparser.sourceparser.WrySourceParser;

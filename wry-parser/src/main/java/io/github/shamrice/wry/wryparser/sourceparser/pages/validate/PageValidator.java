@@ -1,4 +1,4 @@
-package io.github.shamrice.wry.wryparser.sourceparser.validate;
+package io.github.shamrice.wry.wryparser.sourceparser.pages.validate;
 
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import org.apache.log4j.Logger;
