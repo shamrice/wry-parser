@@ -1,14 +1,11 @@
 package io.github.shamrice.wry.wryparser.sourceparser;
 
 import io.github.shamrice.wry.wryparser.configuration.Configuration;
-import io.github.shamrice.wry.wryparser.sourceparser.choices.ChoiceParser;
 import io.github.shamrice.wry.wryparser.sourceparser.linker.StoryLinker;
 import io.github.shamrice.wry.wryparser.sourceparser.linker.StoryLinkerImpl;
-import io.github.shamrice.wry.wryparser.sourceparser.pages.PageBuilder;
 import io.github.shamrice.wry.wryparser.sourceparser.pages.PageBuilderImpl;
-import io.github.shamrice.wry.wryparser.sourceparser.pages.validate.PageValidator;
+import io.github.shamrice.wry.wryparser.sourceparser.stories.StoryBuilderImpl;
 import io.github.shamrice.wry.wryparser.story.Story;
-import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
@@ -21,14 +18,12 @@ import java.time.Instant;
 import java.util.*;
 
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.ExitCodeConstants.LINK_STORIES_FAILED;
-import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConstants.*;
 import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicCommandConstants.*;
 
 public class WrySourceParser {
 
     private static final Logger logger = Logger.getLogger(WrySourceParser.class);
 
-    private List<Story> storyData = new ArrayList<>();
     private Map<String, List<String>> rawSubData = new HashMap<>();
 
     public List<String> getSubDisplayData(String subName) {
@@ -55,17 +50,16 @@ public class WrySourceParser {
         populateRawSubData();
 
         logger.info("Generating Story Data.");
-        generateStories();
+        List<Story> storyData = new StoryBuilderImpl(this.rawSubData).build();
 
         logger.info("Generating Story Pages.");
-        PageBuilder pageBuilder = new PageBuilderImpl();
-        List<StoryPage> unlinkedStoryPages = pageBuilder.build(rawSubData);
+        List<StoryPage> unlinkedStoryPages = new PageBuilderImpl(this.rawSubData).build();
 
         logger.info("Linking destination pageIds to Story Page Choices");
         linkDestinationPagesToChoices(unlinkedStoryPages);
 
         logger.info("Linking pages into stories.");
-        linkStories(unlinkedStoryPages);
+        linkStories(storyData, unlinkedStoryPages);
 
         Instant endInstant = Instant.now();
 
@@ -112,49 +106,12 @@ public class WrySourceParser {
         }
     }
 
-    private void generateStories() {
-
-        /*
-            There are two story choice screens. The unlocked one that has the destination for episode 4
-            lacks the pregame screens and the locked one lacks the link to the pregame of episode 4. To get
-            around this, we have to comb through both of these subs to find the pregame screen destinations
-        */
-
-        List<String> rawStorySubDataLocked = rawSubData.get(STORY_SUB_NAME1);
-        List<String> rawStorySubDataUnlocked = rawSubData.get(STORY_SUB_NAME2);
-
-        ChoiceParser choiceParser = new ChoiceParser();
-
-        List<PageChoice> storyChoicesLocked = choiceParser.getChoicesForSub(rawStorySubDataLocked);
-        List<PageChoice> storyChoicesUnlocked = choiceParser.getChoicesForSub(rawStorySubDataUnlocked);
-
-        storyChoicesLocked.addAll(storyChoicesUnlocked);
-
-        for (PageChoice storyChoice : storyChoicesLocked) {
-
-            if (PageValidator.isPreGameScreen(storyChoice.getDestinationSubName())) {
-
-                String storyChoiceText = storyChoice.getChoiceText();
-                storyChoiceText = storyChoiceText.replace(EPISODE_4_UNLOCKED_TEXT, "");
-
-                Story story = new Story(storyChoice.getChoiceId(), storyChoiceText);
-                story.setFirstPageSubName(storyChoice.getDestinationSubName());
-                this.storyData.add(story);
-
-                logger.info("generateStories :: Added story id " + story.getStoryId() + " : "
-                        + story.getStoryName() + " to storyData. First sub name= "
-                        + story.getFirstPageSubName());
-            }
-        }
-
-    }
-
     private void linkDestinationPagesToChoices(List<StoryPage> unlinkedStories) {
         StoryLinker linker = new StoryLinkerImpl();
         linker.linkDestinationPageIdsToChoices(unlinkedStories);
     }
 
-    private void linkStories(List<StoryPage> unlinkedStoryPages) {
+    private void linkStories(List<Story> storyData, List<StoryPage> unlinkedStoryPages) {
 
         StoryLinker linker = new StoryLinkerImpl();
 

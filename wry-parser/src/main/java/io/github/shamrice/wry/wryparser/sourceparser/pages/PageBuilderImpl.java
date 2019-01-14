@@ -25,9 +25,15 @@ public class PageBuilderImpl implements PageBuilder {
 
     private static final Logger logger = Logger.getLogger(PageBuilderImpl.class);
 
+    private Map<String, List<String>> rawSubData;
+
+    public PageBuilderImpl(Map<String, List<String>> rawSubData) {
+        this.rawSubData = rawSubData;
+    }
+
     // TODO : this should be refactored to be simpler.
     @Override
-    public List<StoryPage> build(Map<String, List<String>> rawSubData) {
+    public List<StoryPage> build() {
 
         int pageId = 0;
         List<StoryPage> storyPages = new ArrayList<>();
