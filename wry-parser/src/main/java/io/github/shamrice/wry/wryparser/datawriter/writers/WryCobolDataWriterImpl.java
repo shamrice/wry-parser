@@ -25,21 +25,23 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
 
     private static final String STORY_ID_PLACEHOLDER = "%d";
     private static final String PAGE_ID_PLACEHOLDER = "%03d";
+    private static final String CORRECT_PAGE_ID_PLACEHOLDER = "%03d";
     private static final String CHOICE_ID_PLACEHOLDER = "%03d";
-    private static final String CORRECT_CHOICE_ID_PLACEHOLDER = "%d"; //TODO : not used. will need to change in wry cobol
+    private static final String CHOICE_NUM_PLACEHOLDER = "%d";
+    private static final String CORRECT_CHOICE_ID_PLACEHOLDER = "%d";
     private static final String STORY_TEXT_PLACEHOLDER = "%s";
     private static final String CHOICE_TEXT_PLACEHOLDER = "%s";
 
     private static final String STORY_START_FILE_FORMAT = STORY_ID_PLACEHOLDER + PAGE_ID_PLACEHOLDER;
 
     private static final String STORY_FILE_FORMAT = STORY_ID_PLACEHOLDER + PAGE_ID_PLACEHOLDER
-            + CHOICE_ID_PLACEHOLDER + CORRECT_CHOICE_ID_PLACEHOLDER;
+            + CORRECT_PAGE_ID_PLACEHOLDER + CORRECT_CHOICE_ID_PLACEHOLDER;
 
     private static final String STORY_TEXT_FILE_FORMAT = STORY_ID_PLACEHOLDER + PAGE_ID_PLACEHOLDER
             + STORY_TEXT_PLACEHOLDER;
 
     private static final String STORY_CHOICE_FILE_FORMAT = STORY_ID_PLACEHOLDER + PAGE_ID_PLACEHOLDER
-            + CHOICE_ID_PLACEHOLDER + CHOICE_ID_PLACEHOLDER + ") " + CHOICE_TEXT_PLACEHOLDER;
+            + CHOICE_ID_PLACEHOLDER + CHOICE_NUM_PLACEHOLDER + ") " + CHOICE_TEXT_PLACEHOLDER;
 
     @Override
     public void writeDataFiles(List<Story> storyList) {
@@ -88,8 +90,8 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
                             STORY_FILE_FORMAT,
                             story.getStoryId(),
                             storyPage.getStoryPageId(),
-                            choice.getChoiceId(),
-                            1
+                            choice.getDestinationPageId(),
+                            choice.getChoiceId()
                     );
                     storyFileLineData.add(storyLineData);
                     logger.info("Story file data adding: " + storyLineData);
