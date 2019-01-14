@@ -1,6 +1,10 @@
 package io.github.shamrice.wry.wryparser;
 
 import io.github.shamrice.wry.wryparser.configuration.Configuration;
+import io.github.shamrice.wry.wryparser.datawriter.WryDataWriterFactory;
+import io.github.shamrice.wry.wryparser.datawriter.WryDataWriter;
+import io.github.shamrice.wry.wryparser.datawriter.datatypes.OutputDataTypes;
+import io.github.shamrice.wry.wryparser.datawriter.writers.WryCobolDataWriterImpl;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.builder.ExcludeFilterBuilder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
@@ -37,6 +41,15 @@ public class Application implements Callable<Void> {
             paramLabel = "EXCLUDE_SUB_NAME_FILE",
             description = "File with list of sub names to exclude from story pages.")
     private File excludeSubNamesFile;
+
+    @CommandLine.Option(names = { "-o", "--output-dir"},
+            description = "Output directory for data files.")
+    private String outputDataDir;
+
+    @CommandLine.Option(names = { "--type", "--output-type"},
+            paramLabel = "WRY_COBOL",
+            description = "Output data file type")
+    private OutputDataTypes outputDataType;
 
     @CommandLine.Option(names = { "-p", "--play"},
             description = "Run debug game in interactive mode after parsing of source file.")
@@ -95,6 +108,16 @@ public class Application implements Callable<Void> {
                 );
 
                 gameRunner.run();
+            }
+
+            if (parsedStories != null && outputDataType != null) {
+                
+                WryDataWriter wryDataWriter = new WryDataWriterFactory(outputDataDir).makeDataWriter(outputDataType);
+                if (wryDataWriter != null) {
+                    wryDataWriter.writeDataFiles(parsedStories);
+                } else {
+                    logger.error("Unable to create Wry data writer. Returned object was null.");
+                }
             }
 
 

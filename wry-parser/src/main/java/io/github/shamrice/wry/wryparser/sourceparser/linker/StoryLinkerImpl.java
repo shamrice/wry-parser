@@ -135,7 +135,7 @@ public class StoryLinkerImpl implements StoryLinker {
                     }
                 }
             } else {
-                logger.error("Exceeded maximum number of traversals through choice " + choice.getChoiceId() + "-" + choice.getChoiceText());
+                logger.warn("Exceeded maximum number of traversals through choice " + choice.getChoiceId() + "-" + choice.getChoiceText());
             }
         }
 
