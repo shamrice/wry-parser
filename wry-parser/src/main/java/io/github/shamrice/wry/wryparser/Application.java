@@ -111,7 +111,7 @@ public class Application implements Callable<Void> {
             }
 
             if (parsedStories != null && outputDataType != null) {
-                
+
                 WryDataWriter wryDataWriter = new WryDataWriterFactory(outputDataDir).makeDataWriter(outputDataType);
                 if (wryDataWriter != null) {
                     wryDataWriter.writeDataFiles(parsedStories);
