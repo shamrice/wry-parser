@@ -7,10 +7,8 @@ import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,8 +23,9 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
 
     private static final String STORY_ID_PLACEHOLDER = "%d";
     private static final String PAGE_ID_PLACEHOLDER = "%03d";
+    private static final String DESTINATION_PAGE_ID_PLACEHOLDER = "%03d";
     private static final String CORRECT_PAGE_ID_PLACEHOLDER = "%03d";
-    private static final String CHOICE_ID_PLACEHOLDER = "%03d";
+    private static final String CHOICE_ID_PLACEHOLDER = "%d";
     private static final String CHOICE_NUM_PLACEHOLDER = "%d";
     private static final String CORRECT_CHOICE_ID_PLACEHOLDER = "%d";
     private static final String STORY_TEXT_PLACEHOLDER = "%s";
@@ -41,7 +40,8 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
             + STORY_TEXT_PLACEHOLDER;
 
     private static final String STORY_CHOICE_FILE_FORMAT = STORY_ID_PLACEHOLDER + PAGE_ID_PLACEHOLDER
-            + CHOICE_ID_PLACEHOLDER + CHOICE_NUM_PLACEHOLDER + ") " + CHOICE_TEXT_PLACEHOLDER;
+            + DESTINATION_PAGE_ID_PLACEHOLDER + CHOICE_ID_PLACEHOLDER + CHOICE_NUM_PLACEHOLDER + ") "
+            + CHOICE_TEXT_PLACEHOLDER;
 
     @Override
     public void writeDataFiles(List<Story> storyList) {
@@ -101,6 +101,7 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
                             STORY_CHOICE_FILE_FORMAT,
                             story.getStoryId(),
                             storyPage.getStoryPageId(),
+                            choice.getDestinationPageId(),
                             choice.getChoiceId(),
                             choice.getChoiceId(),
                             choice.getChoiceText()
@@ -117,7 +118,6 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
         writeFile(storyOutputFile, storyFileLineData);
         writeFile(storyTextFile, storyTextFileLineData);
         writeFile(storyChoiceFile, storyChoiceFileLineData);
-
     }
 
     private void writeFile(String filename, List<String> lineData) {
@@ -137,8 +137,5 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
         logger.info("Completed writing line data to output file : " + filename);
 
     }
-
-
-
 
 }
