@@ -47,7 +47,7 @@ public class Application implements Callable<Void> {
     private String outputDataDir;
 
     @CommandLine.Option(names = { "--type", "--output-type"},
-            paramLabel = "WRY_COBOL",
+            paramLabel = "WRY_COBOL, HTML",
             description = "Output data file type")
     private OutputDataTypes outputDataType;
 

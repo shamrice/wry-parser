@@ -1,6 +1,7 @@
 package io.github.shamrice.wry.wryparser.datawriter;
 
 import io.github.shamrice.wry.wryparser.datawriter.datatypes.OutputDataTypes;
+import io.github.shamrice.wry.wryparser.datawriter.writers.HtmlDataWriterImpl;
 import io.github.shamrice.wry.wryparser.datawriter.writers.WryCobolDataWriterImpl;
 import org.apache.log4j.Logger;
 
@@ -26,6 +27,12 @@ public class WryDataWriterFactory  {
                 wryDataWriter.setOutputDataType(outputDataType);
                 wryDataWriter.setOutputDir(outputDir);
                 break;
+
+            case HTML:
+                logger.info("Creating new HTML data writer.");
+                wryDataWriter = new HtmlDataWriterImpl();
+                wryDataWriter.setOutputDataType(outputDataType);
+                wryDataWriter.setOutputDir(outputDir);
 
             default:
                 logger.error("Cannot create data writer of type " + outputDataType.name());

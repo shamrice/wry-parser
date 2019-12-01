@@ -8,14 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07cea60d-5b9f-4f46-8e14-e59ac922c814" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/erik.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/writers/WryCobolDataWriterImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/writers/WryCobolDataWriterImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wry-parser.iml" beforeDir="false" afterPath="$PROJECT_DIR$/wry-parser.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/WryDataWriterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/WryDataWriterFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/datatypes/OutputDataTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/shamrice/wry/wryparser/datawriter/datatypes/OutputDataTypes.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,11 +82,16 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550818524363" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="Application" type="Application" factoryName="Application" nameIsGenerated="true">
@@ -127,6 +130,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="556" y="161" key="#com.intellij.ide.util.MemberChooser" timestamp="1575199716213">
+      <screen x="47" y="24" width="1393" height="876" />
+    </state>
+    <state x="556" y="161" key="#com.intellij.ide.util.MemberChooser/47.24.1393.876/1440.0.1440.900@47.24.1393.876" timestamp="1575199716213" />
     <state x="147" y="96" width="1193" height="704" key="DiffContextDialog" timestamp="1575192125023">
       <screen x="47" y="24" width="1393" height="876" />
     </state>
@@ -139,5 +146,9 @@
       <screen x="47" y="24" width="1393" height="876" />
     </state>
     <state x="231" y="26" key="SettingsEditor/47.24.1393.876/1440.0.1440.900@47.24.1393.876" timestamp="1575191981078" />
+    <state x="406" y="191" width="672" height="678" key="search.everywhere.popup" timestamp="1575227681707">
+      <screen x="47" y="24" width="1393" height="876" />
+    </state>
+    <state x="406" y="191" width="672" height="678" key="search.everywhere.popup/47.24.1393.876/1440.0.1440.900@47.24.1393.876" timestamp="1575227681707" />
   </component>
 </project>
