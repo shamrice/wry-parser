@@ -134,7 +134,8 @@ public class HtmlDataWriterImpl extends WryDataWriter {
                     int destinationPage = storyPage.getPageChoices().get(0).getDestinationPageId();
                     String destinationUrl = String.format(FILE_NAME_PATTERN, storyPage.getSourceStoryId(), destinationPage);
 
-                    String fileContents = FILE_HEADER + "<P>" + storyPage.getPageText()
+                    String fileContents = FILE_HEADER + "<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            + storyPage.getPageText().replace("\n", "<br />")
                             + "</P><BR /><div class=\"start-link\"><a href=\"" + destinationUrl + "\">Click here to begin.</a></div><br />"
                             + FILE_FOOTER;
                     writeFile(storyStartFile, fileContents);
