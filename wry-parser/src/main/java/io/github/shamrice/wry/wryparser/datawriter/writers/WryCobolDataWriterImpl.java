@@ -74,11 +74,14 @@ public class WryCobolDataWriterImpl extends WryDataWriter {
                 }
 
                 //get page data
+                //COBOL does not use \n. Data must be in one line in DAT file as well.
+                String storyPageText = storyPage.getPageText().replaceAll("\\n", " ");
+
                 String storyTextLineData = String.format(
                         STORY_TEXT_FILE_FORMAT,
                         story.getStoryId(),
                         storyPage.getStoryPageId(),
-                        storyPage.getPageText()
+                        storyPageText
                 );
                 storyTextFileLineData.add(storyTextLineData);
                 logger.info("Story-text file data adding: " + storyTextLineData);

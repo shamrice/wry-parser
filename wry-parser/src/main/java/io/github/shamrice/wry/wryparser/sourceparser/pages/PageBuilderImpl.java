@@ -303,7 +303,7 @@ public class PageBuilderImpl implements PageBuilder {
                 String trimmedLine = LineTrimmer.trimPrintCommandsAndSpaces(line);
 
                 if (!trimmedLine.isEmpty() && !trimmedLine.matches(CHOICE_REGEX_PATTERN)) {
-                    pageStoryText.append(trimmedLine);
+                    pageStoryText.append(trimmedLine).append("\n");
                 }
             }
         }
