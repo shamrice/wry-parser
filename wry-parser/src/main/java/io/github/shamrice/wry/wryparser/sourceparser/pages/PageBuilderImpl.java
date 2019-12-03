@@ -299,6 +299,10 @@ public class PageBuilderImpl implements PageBuilder {
         StringBuilder pageStoryText = new StringBuilder();
 
         for (String line : rawSubLineData) {
+            //if reached game choices, stop reading page data to avoid grabbing junk data.
+            if (line.startsWith(SELECT_COMMAND)) {
+                break;
+            }
             if (line.startsWith(PRINT_COMMAND)) {
                 String trimmedLine = LineTrimmer.trimPrintCommandsAndSpaces(line);
 
