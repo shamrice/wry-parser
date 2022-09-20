@@ -5,7 +5,8 @@ import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.filter.trim.LineTrimmer;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,7 +20,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicComm
 
 public class ChoiceParser {
 
-    private Logger logger = Logger.getLogger(ChoiceParser.class);
+    private static final Logger logger = LogManager.getLogger(ChoiceParser.class);
 
     public List<PageChoice> getChoicesForSub(List<String> rawSubLineData) {
         Map<Integer, String> choiceDestinations = new HashMap<>();

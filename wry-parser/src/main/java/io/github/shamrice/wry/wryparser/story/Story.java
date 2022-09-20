@@ -2,14 +2,15 @@ package io.github.shamrice.wry.wryparser.story;
 
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class Story {
 
-    private static final Logger logger = Logger.getLogger(Story.class);
+    private static final Logger logger = LogManager.getLogger(Story.class);
 
     private int storyId;
     private String storyName;

@@ -3,7 +3,8 @@ package io.github.shamrice.wry.wryparser.filter.exclude.builder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterImpl;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class ExcludeFilterBuilder {
 
-    private static final Logger logger = Logger.getLogger(ExcludeFilterBuilder.class);
+    private static final Logger logger = LogManager.getLogger(ExcludeFilterBuilder.class);
 
     public static ExcludeFilter build(ExcludeFilterType excludeFilterType, File excludeFilterFile) throws IOException {
 

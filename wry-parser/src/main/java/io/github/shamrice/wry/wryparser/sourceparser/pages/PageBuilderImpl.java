@@ -9,7 +9,8 @@ import io.github.shamrice.wry.wryparser.sourceparser.pages.validate.PageValidato
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicComm
 
 public class PageBuilderImpl implements PageBuilder {
 
-    private static final Logger logger = Logger.getLogger(PageBuilderImpl.class);
+    private static final Logger logger = LogManager.getLogger(PageBuilderImpl.class);
 
     private Map<String, List<String>> rawSubData;
 

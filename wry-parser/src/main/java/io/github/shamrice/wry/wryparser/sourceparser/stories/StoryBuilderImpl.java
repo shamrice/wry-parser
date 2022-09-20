@@ -4,7 +4,8 @@ import io.github.shamrice.wry.wryparser.sourceparser.choices.ChoiceParser;
 import io.github.shamrice.wry.wryparser.sourceparser.pages.validate.PageValidator;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class StoryBuilderImpl implements StoryBuilder {
 
-    private Logger logger = Logger.getLogger(StoryBuilderImpl.class);
+    private static final Logger logger = LogManager.getLogger(StoryBuilderImpl.class);
 
     private Map<String, List<String>> rawSubData;
 

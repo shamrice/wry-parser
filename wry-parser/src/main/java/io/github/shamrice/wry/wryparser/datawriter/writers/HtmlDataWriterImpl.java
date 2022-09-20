@@ -5,19 +5,16 @@ import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
-import org.omg.CosNaming._NamingContextExtStub;
-import sun.jvm.hotspot.debugger.linux.LinuxDebugger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 public class HtmlDataWriterImpl extends WryDataWriter {
 
-    private static final Logger logger = Logger.getLogger(HtmlDataWriterImpl.class);
+    private static final Logger logger = LogManager.getLogger(HtmlDataWriterImpl.class);
 
     private static final String STORY_PATTERN = "%d";
     private static final String PAGE_PATTERN = "%03d";

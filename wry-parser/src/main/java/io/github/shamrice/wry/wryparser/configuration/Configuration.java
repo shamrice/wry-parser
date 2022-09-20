@@ -2,14 +2,15 @@ package io.github.shamrice.wry.wryparser.configuration;
 
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.List;
 
 public class Configuration {
 
-    private static final Logger logger = Logger.getLogger(Configuration.class);
+    private static final Logger logger = LogManager.getLogger(Configuration.class);
 
     private File wrySourceFile;
     private List<ExcludeFilter> excludeFilterList;

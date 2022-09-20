@@ -4,7 +4,8 @@ import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Scanner;
@@ -14,7 +15,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class GameRunner {
 
-    private static final Logger logger = Logger.getLogger(GameRunner.class);
+    private static final Logger logger = LogManager.getLogger(GameRunner.class);
 
     private List<String> titleScreenData;
     private List<Story> storyList;

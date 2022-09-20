@@ -1,7 +1,8 @@
 package io.github.shamrice.wry.wryparser.sourceparser.pages.validate;
 
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicComm
 
 public class PageValidator {
 
-    private static final Logger logger = Logger.getLogger(PageValidator.class);
+    private static final Logger logger = LogManager.getLogger(PageValidator.class);
 
     // TODO : This should probably be either a constant or a config value.
     public static boolean isPreGameScreen(String subName) {

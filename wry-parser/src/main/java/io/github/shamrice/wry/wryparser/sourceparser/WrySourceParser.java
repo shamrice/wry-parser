@@ -7,7 +7,8 @@ import io.github.shamrice.wry.wryparser.sourceparser.pages.PageBuilderImpl;
 import io.github.shamrice.wry.wryparser.sourceparser.stories.StoryBuilderImpl;
 import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +23,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.QBasicComm
 
 public class WrySourceParser {
 
-    private static final Logger logger = Logger.getLogger(WrySourceParser.class);
+    private static final Logger logger = LogManager.getLogger(WrySourceParser.class);
 
     private Map<String, List<String>> rawSubData = new HashMap<>();
 

@@ -4,14 +4,14 @@ import io.github.shamrice.wry.wryparser.configuration.Configuration;
 import io.github.shamrice.wry.wryparser.datawriter.WryDataWriterFactory;
 import io.github.shamrice.wry.wryparser.datawriter.WryDataWriter;
 import io.github.shamrice.wry.wryparser.datawriter.datatypes.OutputDataTypes;
-import io.github.shamrice.wry.wryparser.datawriter.writers.WryCobolDataWriterImpl;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilter;
 import io.github.shamrice.wry.wryparser.filter.exclude.builder.ExcludeFilterBuilder;
 import io.github.shamrice.wry.wryparser.filter.exclude.ExcludeFilterType;
 import io.github.shamrice.wry.wryparser.game.GameRunner;
 import io.github.shamrice.wry.wryparser.sourceparser.WrySourceParser;
 import io.github.shamrice.wry.wryparser.story.Story;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class Application implements Callable<Void> {
 
-    private static final Logger logger = Logger.getLogger(Application.class);
+    private static final Logger logger = LogManager.getLogger(Application.class);
 
     @CommandLine.Option(names = { "-s", "--source" },
             paramLabel = "SOURCE",
@@ -122,7 +122,7 @@ public class Application implements Callable<Void> {
 
 
         } catch (Exception ex) {
-           logger.error(ex);
+           logger.error(ex.getMessage(), ex);
         }
 
         logger.info("Run complete.");

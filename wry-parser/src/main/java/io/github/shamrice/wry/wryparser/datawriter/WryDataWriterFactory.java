@@ -3,12 +3,13 @@ package io.github.shamrice.wry.wryparser.datawriter;
 import io.github.shamrice.wry.wryparser.datawriter.datatypes.OutputDataTypes;
 import io.github.shamrice.wry.wryparser.datawriter.writers.HtmlDataWriterImpl;
 import io.github.shamrice.wry.wryparser.datawriter.writers.WryCobolDataWriterImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class WryDataWriterFactory  {
 
-    private static final Logger logger = Logger.getLogger(WryDataWriterFactory.class);
+    private static final Logger logger = LogManager.getLogger(WryDataWriterFactory.class);
 
     private String outputDir;
 

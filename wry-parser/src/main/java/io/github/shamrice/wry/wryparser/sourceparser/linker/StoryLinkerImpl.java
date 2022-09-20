@@ -5,7 +5,8 @@ import io.github.shamrice.wry.wryparser.story.Story;
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
 import io.github.shamrice.wry.wryparser.story.storypage.PageType;
 import io.github.shamrice.wry.wryparser.story.storypage.StoryPage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static io.github.shamrice.wry.wryparser.sourceparser.constants.ParseConst
 
 public class StoryLinkerImpl implements StoryLinker {
 
-    private static final Logger logger = Logger.getLogger(StoryLinkerImpl.class);
+    private static final Logger logger = LogManager.getLogger(StoryLinkerImpl.class);
 
     @Override
     public void linkDestinationPageIdsToChoices(List<StoryPage> storyPages) {

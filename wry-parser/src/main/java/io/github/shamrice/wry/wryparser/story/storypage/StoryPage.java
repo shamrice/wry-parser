@@ -1,14 +1,15 @@
 package io.github.shamrice.wry.wryparser.story.storypage;
 
 import io.github.shamrice.wry.wryparser.story.storypage.PageChoice.PageChoice;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StoryPage {
 
-    private static final Logger logger = Logger.getLogger(StoryPage.class);
+    private static final Logger logger = LogManager.getLogger(StoryPage.class);
 
     private boolean isParsed = false;
     private int sourceStoryId = -1;
